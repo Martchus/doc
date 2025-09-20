@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Testing and debugging Dolphin/KIO plugin with Qt Creator &#8212; Syncthing Tray (git) 2025-09-02 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=63911549"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Testing and debugging Plasmoid for Plasma with Qt Creator" href="../plasmoid/testing.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="testing-and-debugging-dolphin-kio-plugin-with-qt-creator">
+<h1>Testing and debugging Dolphin/KIO plugin with Qt Creator<a class="headerlink" href="#testing-and-debugging-dolphin-kio-plugin-with-qt-creator" title="Link to this heading">¶</a></h1>
+<ol class="arabic simple">
+<li><p>Build as usual, ensure <code class="docutils literal notranslate"><span class="pre">NO_FILE_ITEM_ACTION_PLUGIN</span></code> is turned off.</p></li>
+<li><p>For KF5, copy the <code class="docutils literal notranslate"><span class="pre">*.desktop</span></code> file from the build directory to <code class="docutils literal notranslate"><span class="pre">~/.local/share/kservices5</span></code> and enable
+it in Dolphin. You may skip this step if a packaged version with the same configuration name is already
+installed. As of KF6 this step is not required anymore.</p></li>
+<li><p>Add new config for run in Qt Creator and set <code class="docutils literal notranslate"><span class="pre">dolphin</span></code> as executable.</p></li>
+<li><p>In the execution environment, set</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">QT_PLUGIN_PATH</span></code> to the build directory of the plugin (for KF5 this directory contains the <code class="docutils literal notranslate"><span class="pre">so</span></code>-file
+directly, for KF6 it is in the sub directory <code class="docutils literal notranslate"><span class="pre">kf6/kfileitemaction</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QT_DEBUG_PLUGINS</span></code> to 1 for verbose plugin detection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QT_XCB_NO_GRAB_SERVER</span></code> to 1 to prevent grabbing so the debugger is usable (not required under
+Wayland).</p></li>
+</ul>
+</li>
+<li><p>Ignore the warning that the executable is no debug build. It is sufficient when the plugin is a debug
+build.</p></li>
+</ol>
+<section id="testing-against-a-development-build-of-dolphin">
+<h2>Testing against a development build of Dolphin<a class="headerlink" href="#testing-against-a-development-build-of-dolphin" title="Link to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p>Build the whole dependency chain up to <code class="docutils literal notranslate"><span class="pre">dolphin</span></code> installing it under some custom prefix.</p></li>
+<li><p>Then follow the usual steps but make sure you build Syncthing Tray against the custom KDE builds.
+This is achieved the easiest by using the <code class="docutils literal notranslate"><span class="pre">debug-kde-custom</span></code> CMake preset. This preset uses the
+environment variable <code class="docutils literal notranslate"><span class="pre">KDE_INSTALL_DIR</span></code> which must point to the custom prefix used in step 1.</p></li>
+<li><p>Source the <code class="docutils literal notranslate"><span class="pre">prefix.sh</span></code> script that should be present in the build directory of any KDE library
+you built in step 1, e.g. <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">kde/plasma-sdk/prefix.sh</span></code>.</p></li>
+<li><p>When setting the environment one needs to be more careful to not override variables set in step 3.
+It is the easiest to just start <code class="docutils literal notranslate"><span class="pre">dolphin</span></code> from the shell:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>QT_PLUGIN_PATH=$BUILD_DIR/syncthingtray/debug-kde-custom/syncthingtray/fileitemactionplugin:$QT_PLUGIN_PATH dolphin
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Syncthing Tray (git)</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/cli.html">Using the command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/known_bugs_and_workarounds.html">Known bugs and workarounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/android.html">Using the Android app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/devel.html">Contributing, building, developing, debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plasmoid/testing.html">Testing and debugging Plasmoid for Plasma with Qt Creator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plasmoid/testing.html#testing-against-a-development-build-of-plasma">Testing against a development build of Plasma</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Testing and debugging Dolphin/KIO plugin with Qt Creator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#testing-against-a-development-build-of-dolphin">Testing against a development build of Dolphin</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../plasmoid/testing.html" title="previous chapter">Testing and debugging Plasmoid for Plasma with Qt Creator</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;Martchus.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/fileitemactionplugin/testing.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

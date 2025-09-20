@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Syncthing Tray &#8212; Syncthing Tray (git) 2025-09-02 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=63911549"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Screenshots" href="docs/screenshots.html" />
+    <link rel="prev" title="Documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="syncthing-tray">
+<h1>Syncthing Tray<a class="headerlink" href="#syncthing-tray" title="Link to this heading">¶</a></h1>
+<p>Syncthing Tray provides a tray icon and further platform integrations for
+<a class="reference external" href="https://github.com/syncthing/syncthing">Syncthing</a>. Checkout the
+<a class="reference external" href="https://martchus.github.io/syncthingtray">website</a> for an overview and
+screenshots.</p>
+<p>The following integrations are provided:</p>
+<ul class="simple">
+<li><p>Tray application (using the Qt framework)</p></li>
+<li><p>Context menu extension for the <a class="reference external" href="https://www.kde.org/applications/system/dolphin">Dolphin</a> file manager</p></li>
+<li><p>Plasmoid for <a class="reference external" href="https://www.kde.org/plasma-desktop">KDE Plasma</a></p></li>
+<li><p><a class="reference internal" href="docs/cli.html"><span class="std std-doc">Command-line interface</span></a></p></li>
+<li><p>Qt-ish C++ library</p></li>
+</ul>
+<hr class="docutils" />
+<p>Checkout the <a class="reference external" href="https://forum.syncthing.net/t/yet-another-syncthing-tray">official forum thread</a> for discussions
+and announcement of new features.</p>
+<p>This README document currently serves as the only and main documentation. So read on for details about
+the configuration. If you are not familiar with Syncthing itself already you should also have a look at
+the <a class="reference external" href="https://docs.syncthing.net">Syncthing documentation</a> as this README is only going to cover the
+Syncthing Tray integration.</p>
+<p>Issues can be created on GitHub but please check the
+<a class="reference internal" href="docs/known_bugs_and_workarounds.html"><span class="std std-doc">documentation on known bugs and workarounds</span></a> before.</p>
+<p>Syncthing Tray works with Syncthing v1 and v2 (and probably v0). Syncthing Tray is maintained, and updates will
+be made to support future Syncthing versions as needed.</p>
+<section id="supported-platforms">
+<h2>Supported platforms<a class="headerlink" href="#supported-platforms" title="Link to this heading">¶</a></h2>
+<p>Official binaries are provided for Windows (for i686, x86_64 and aarch64) and GNU/Linux (for x86_64) and can be
+download from the <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">website</a> and the
+<a class="reference external" href="https://github.com/Martchus/syncthingtray/releases">release section on GitHub</a>. This is only a fraction of
+the available downloads, though. I also provide further repositories for some GNU/Linux distributions. There are
+also binaries/repositories provided by other distributors. For a list with links, checkout the
+“<a class="reference internal" href="#download"><span class="xref myst">Download</span></a>” section of this document.</p>
+<p>Syncthing Tray is known to work under:</p>
+<ul class="simple">
+<li><p>Windows 10 and 11</p></li>
+<li><p>KDE Plasma</p></li>
+<li><p>Openbox using lxqt/LXDE or using Tint2</p></li>
+<li><p>GTK-centered desktops such as Cinnamon, GNOME and Xfce (with caveats, see remarks below)</p></li>
+<li><p>COSMIC (only simple tray menu works, see remarks below)</p></li>
+<li><p>Awesome</p></li>
+<li><p>i3</p></li>
+<li><p>macOS</p></li>
+<li><p>Deepin Desktop Environment</p></li>
+<li><p>Sway/Swaybar/Waybar (with caveats, see remarks below)</p></li>
+<li><p>Android (still experimental)</p></li>
+</ul>
+<p>This does <em>not</em> mean Syncthing Tray is actively tested on all those platforms or
+desktop environments.</p>
+<p>For Plasma 5 and 6, there is in addition to the Qt Widgets based version also a “native”
+Plasmoid. Note that the latest version of the Plasmoid generally also requires the
+latest version of Plasma 5 or 6 as no testing on earlier versions is done. Use the Qt
+Widgets based version on other Plasma versions. Checkout the
+“<a class="reference internal" href="#configuring-plasmoid"><span class="xref myst">Configuring Plasmoid</span></a>” section for further details.</p>
+<p>On GTK-centered desktops have a look at the
+<a class="reference external" href="https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications">Arch Wiki</a>
+for how to achieve a more native look and feel. Under GNOME one needs to install
+<a class="reference external" href="https://github.com/ubuntu/gnome-shell-extension-appindicator">an extension</a> for tray icon support (unless
+one’s distribution already provides such an extension by default).</p>
+<p>Limitations of your system tray might affect Syncthing Tray. For instance when using the mentioned GNOME
+extension the Syncthing Tray UI shown in the <a class="reference internal" href="docs/screenshots.html"><span class="std std-doc">screenshots</span></a> is only shown by <em>double</em>-clicking
+the icon. If your system tray is unable to show the Syncthing Tray UI at all like on COSMIC you can still use
+Syncthing Tray for the tray icon and basic functionality accessible via the menu.</p>
+<p>Note that under Wayland-based desktops there will be positioning issues. The Plasmoid is not affected
+by this, though.</p>
+<p>The <a class="reference internal" href="docs/known_bugs_and_workarounds.html"><span class="std std-doc">documentation on known bugs and workarounds</span></a>
+contains further information and workarounds for certain platform-specific issues like the positioning issues under
+Wayland.</p>
+<p>Documentation on how to use Syncthing Tray on Android can be found in a <a class="reference internal" href="docs/android.html"><span class="std std-doc">separate document</span></a>.</p>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Provides quick access to most frequently used features but does not intend to replace the official web-based UI</p>
+<ul>
+<li><p>Check state of folders and devices</p></li>
+<li><p>Check current traffic statistics</p></li>
+<li><p>Display further details about folders and devices, like last file, last
+scan, items out of sync, …</p></li>
+<li><p>Display ongoing downloads</p></li>
+<li><p>Display Syncthing log</p></li>
+<li><p>Trigger re-scan of a specific folder or all folders at once</p></li>
+<li><p>Open a folder with the default file browser</p></li>
+<li><p>Pause/resume a specific device or all devices at once</p></li>
+<li><p>Pause/resume a specific folder</p></li>
+<li><p>View recent history of changes (done locally and remotely)</p></li>
+</ul>
+</li>
+<li><p>Shows “desktop” notifications</p>
+<ul>
+<li><p>The events to show notifications for can be configured</p></li>
+<li><p>Uses Qt’s notification support or a D-Bus notification daemon directly</p></li>
+</ul>
+</li>
+<li><p>Provides a wizard for a quick setup</p></li>
+<li><p>Allows monitoring the status of the Syncthing systemd unit and to start and stop it (see section
+“<a class="reference internal" href="#configuring-systemd-integration"><span class="xref myst">Configuring systemd integration</span></a>”)</p></li>
+<li><p>Provides an option to conveniently add the tray to the applications launched when the desktop environment starts</p></li>
+<li><p>Can launch Syncthing automatically when started and display stdout/stderr (useful under Windows)</p></li>
+<li><p>Browsing the global file tree and selecting items to add to ignore patterns.</p></li>
+<li><p>Provides quick access to the official web-based UI</p>
+<ul>
+<li><p>Can be opened as regular browser tab</p></li>
+<li><p>Can be opened in a dedicated window utilizing either</p>
+<ul>
+<li><p>Qt WebEngine/WebKit</p></li>
+<li><p>the “app mode” of a Chromium-based browser (e.g. Chrome and Edge)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Allows switching quickly between multiple Syncthing instances</p></li>
+<li><p>Also features a simple command line utility <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code></p>
+<ul>
+<li><p>Check status</p></li>
+<li><p>Trigger rescan/pause/resume/restart</p></li>
+<li><p>Wait for idle</p></li>
+<li><p>View and modify raw configuration</p></li>
+<li><p>Supports Bash completion, even for folder and device names</p></li>
+</ul>
+</li>
+<li><p>Also bundles a KIO plugin which shows the status of a Syncthing folder and allows to trigger Syncthing actions
+in the Dolphin file manager</p>
+<ul>
+<li><p>Rescan selected items</p></li>
+<li><p>Rescan entire Syncthing folder</p></li>
+<li><p>Pause/resume Syncthing folder</p></li>
+<li><p>See also the <a class="reference internal" href="docs/screenshots.html#syncthing-actions-for-dolphin"><span class="std std-ref">screenshots</span></a></p></li>
+</ul>
+</li>
+<li><p>Allows building Syncthing as a library to run it in the same process as the tray/GUI</p></li>
+<li><p>English and German localization</p></li>
+</ul>
+</section>
+<section id="does-this-launch-or-bundle-syncthing-itself-what-about-my-existing-syncthing-installation">
+<h2>Does this launch or bundle Syncthing itself? What about my existing Syncthing installation?<a class="headerlink" href="#does-this-launch-or-bundle-syncthing-itself-what-about-my-existing-syncthing-installation" title="Link to this heading">¶</a></h2>
+<p>Syncthing Tray does <em>not</em> launch Syncthing itself by default. There should be no interference with your existing
+Syncthing installation. You might consider different configurations:</p>
+<ul class="simple">
+<li><p>If you’re happy how Syncthing is started on your system so far just tell Syncthing Tray to connect to your currently
+running Syncthing instance in the settings.</p>
+<ul>
+<li><p>When starting Syncthing via systemd it is recommended to enable the systemd integration in the settings (see section
+“<a class="reference internal" href="#configuring-systemd-integration"><span class="xref myst">Configuring systemd integration</span></a>”).</p></li>
+<li><p>When starting Syncthing by other means (e.g. as Windows service) there are no further integrations provided. Hence,
+Syncthing Tray cannot know whether Syncthing is expected to be running or not. It will therefore unconditionally
+attempt to connect with Syncthing continuously as-per the configurable re-connect interval. It will also
+unconditionally notify when disconnecting from Syncthing if this kind of notification is enabled (so it makes perhaps
+most sense to disable it).</p></li>
+</ul>
+</li>
+<li><p>If you would like Syncthing Tray to take care of starting Syncthing for you, you can use the Syncthing launcher
+available in the settings. Note that this is <em>not</em> supported when using the Plasmoid.</p>
+<ul>
+<li><p>The Linux and Windows builds provided in the <a class="reference external" href="https://github.com/Martchus/syncthingtray/releases">release section on GitHub</a>
+come with a built-in version of Syncthing which you can consider to use. Note that the built-in version of Syncthing
+will be only updated when you update Syncthing Tray (either manually or via the its updater). The update feature of
+Syncthing itself is not available this way.</p></li>
+<li><p>In any case you can simply point the launcher to the binary of Syncthing which you have to download/install separately.
+This way Syncthing can be (but also has to be) updated independently of Syncthing Tray, e.g. using Syncthing’s own
+update feature.</p></li>
+<li><p>Checkout the “<a class="reference internal" href="#configuring-the-built-in-launcher"><span class="xref myst">Configuring the built-in launcher</span></a>” section for further details.</p></li>
+</ul>
+</li>
+<li><p>It is also possible to let Syncthing Tray connect to a Syncthing instance running on a different machine.</p></li>
+</ul>
+<p>Note that the experimental UI tailored for mobile devices is more limited. So far it can only start a built-in
+version of Syncthing or connect to an externally started Syncthing instance. It will set a custom config/data
+directory for Syncthing so any Syncthing instance launched via the mobile UI will not interfere with existing setups.</p>
+</section>
+<section id="installation-and-deinstallation">
+<h2>Installation and deinstallation<a class="headerlink" href="#installation-and-deinstallation" title="Link to this heading">¶</a></h2>
+<p>Checkout <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">the website</a> for obtaining the executable
+or package. This README also lists more options and instructions for building from sources.</p>
+<p>If you are using one of the package manager options you should follow the usual workflow of that package manager.</p>
+<p>Otherwise, you just have to extract the archive and launch the contained executable. Especially on Windows, please
+read the notes on the website before filing any issues. To uninstall, just delete the executable again.</p>
+<p>Notifications about updates can be enabled in the settings which also allow upgrading to a new version if available.
+This simply replaces the executable at the location where you put it so this location needs to be writable. The old
+executable is renamed/preserved as a backup and you can simply rename it back if you need to go back to the previous
+version.</p>
+<p>For further cleanup you may ensure that autostart is disabled (to avoid a dangling autostart entry). You may also
+delete the configuration files (see “<a class="reference internal" href="#location-of-the-configuration-file"><span class="xref myst">Location of the configuration file</span></a>”
+section below).</p>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<p>You need to configure how Syncthing Tray should connect to Syncthing itself. The previous
+section “Does this launch or bundle Syncthing itself…” mentions available options. Additionally,
+a wizard is shown on the first launch which can guide though the configuration for common
+setups. If you have dismissed the wizard you can still open it at any point via a button on the
+top-right corner of the settings dialog.</p>
+<p>It may be worthwhile to browse though the pages of the configuration dialog to tweak Syncthing
+Tray to your needs, e.g. to turn off notification you may find annoying.</p>
+<section id="location-of-the-configuration-file">
+<h3>Location of the configuration file<a class="headerlink" href="#location-of-the-configuration-file" title="Link to this heading">¶</a></h3>
+<p>The configuration file is usually located under <code class="docutils literal notranslate"><span class="pre">~/.config/syncthingtray.ini</span></code> on GNU/Linux and
+under <code class="docutils literal notranslate"><span class="pre">%appdata%\syncthingtray.ini</span></code> on Windows. For other platforms and further details,
+checkout the
+<a class="reference external" href="https://doc.qt.io/qt-6/qsettings.html#locations-where-application-settings-are-stored">Qt documentation</a>
+(Syncthing Tray uses the “IniFormat”). For portable installations it is also possible to place
+an empty file called <code class="docutils literal notranslate"><span class="pre">syncthingtray.ini</span></code> directly next to the executable.</p>
+<p>You may remove the configuration file under the mentioned location to start from scratch.</p>
+<p>Note that this only counts for Syncthing Tray. For Syncthing itself, checkout
+<a class="reference external" href="https://docs.syncthing.net/users/config.html">its own documentation</a>.</p>
+<p>The Plasmoid is using the same configuration file but in addition also Plasma’s configuration
+management for settings specific to a concrete instance of the Plasmoid.</p>
+<p>The experimental UI tailored for mobile devices is using a distinct configuration which is
+located under <code class="docutils literal notranslate"><span class="pre">~/.config/Martchus/Syncthing</span> <span class="pre">Tray</span></code> on GNU/Linux and
+<code class="docutils literal notranslate"><span class="pre">/storage/emulated/0/Android/data/io.github.martchus.syncthingtray</span></code> on Android and
+<code class="docutils literal notranslate"><span class="pre">%appdata%\Martchus\Syncthing</span> <span class="pre">Tray</span></code> on Windows. The configuration and database of Syncthing
+itself are also located within this directory when Syncthing is launched via the mobile UI.</p>
+</section>
+<section id="connect-to-syncthing-via-unix-domain-socket">
+<h3>Connect to Syncthing via Unix domain socket<a class="headerlink" href="#connect-to-syncthing-via-unix-domain-socket" title="Link to this heading">¶</a></h3>
+<p>When using a Unix domain socket as Syncthing GUI address (e.g. by starting Syncthing with
+parameters like <code class="docutils literal notranslate"><span class="pre">--gui-address=unix://%t/syncthing.socket</span> <span class="pre">--skip-port-probing</span></code>) you need to
+specify the path to the socket as “Local path” in the advanced connection settings. This
+setting requires Qt 6.8 or higher. You still need to provide the “Syncthing URL” using the
+<code class="docutils literal notranslate"><span class="pre">unix+http</span></code> as scheme (e.g. <code class="docutils literal notranslate"><span class="pre">unix+http://127.0.0.1:8080</span></code> where the host and port are not
+actually used). The web view will not work with this, though.</p>
+</section>
+<section id="single-instance-behavior-and-launch-options">
+<h3>Single-instance behavior and launch options<a class="headerlink" href="#single-instance-behavior-and-launch-options" title="Link to this heading">¶</a></h3>
+<p>This section does <em>not</em> apply to the <a class="reference internal" href="#using-the-android-app"><span class="xref myst">Android app</span></a>, the
+<a class="reference internal" href="#configuring-plasmoid"><span class="xref myst">Plasmoid</span></a> and the
+<a class="reference internal" href="#configuring-dolphin-integration"><span class="xref myst">Dolphin integration</span></a>.</p>
+<p>Syncthing Tray is a single-instance application. So if you try to start a second instance the
+second process will only pass arguments to the process that is already running and exit. This
+is useful as is prevents one from accidentally launching two Syncthing instances at the same
+time via the built-in Syncthing launcher. It also allows triggering certain actions via launch
+options, see “<a class="reference internal" href="#configuring-hotkeys"><span class="xref myst">Configuring hotkeys</span></a>” for details.</p>
+<p>Besides that there are a few other notable launch options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--connection</span> <span class="pre">[config</span> <span class="pre">name]</span> <span class="pre">…</span></code>:
+Shows tray icons for the specified connection configurations (instead of just a single tray
+icon for the primary connection configuration). Syncthing Tray will still behave as a
+single-instance application so a single process will handle all those tray icons and the
+built-in Syncthing launcher will launch Syncthing only once.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--replace</span></code>:
+Changes the single-instance behavior so that the already running process is existing and
+the second process continues to run. This is useful to restart Syncthing Tray after
+updating.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--new-instance</span></code>:
+Disables the single-instance behavior. This can be useful to run two instances of
+Syncthing itself via the built-in launcher in parallel. This only makes sense if those
+two Syncthing instances use a different configuration/database which can be achieved with
+a <a class="reference internal" href="#location-of-the-configuration-file"><span class="xref myst">portable configuration</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--single-instance</span></code>:
+Avoids the creation of a second tray icon if Syncthing Tray is already running. (Without
+this option, Syncthing Tray will still show another tray icon despite its single-instance
+behavior.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--help</span></code>:
+Prints all launch options.</p></li>
+</ul>
+<p>Those were just the options of the tray application. Checkout
+“<a class="reference internal" href="docs/cli.html"><span class="std std-doc">Using the command-line interface</span></a>” for an
+overview of available tooling for the command-line.</p>
+</section>
+<section id="configuring-plasmoid">
+<h3>Configuring Plasmoid<a class="headerlink" href="#configuring-plasmoid" title="Link to this heading">¶</a></h3>
+<p>The Plasmoid requires installing Syncthing Tray via distribution-specific packaging. It is
+<em>not</em> available via the generic GNU/Linux download or the Flatpak. Checkout the relevant notes
+on the <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">downloads page</a> for
+available options and details on package names. For further information about supported versions
+of Plasma, checkout the “<a class="reference internal" href="#supported-platforms"><span class="xref myst">Supported platforms</span></a>” section.</p>
+<p>The built-in Syncthing launcher is not available in the Plasmoid as it is recommended to rely on
+the systemd integration instead.</p>
+<p>Once installed, Plasma might need to be restarted for the Plasmoid to be selectable.</p>
+<p>The Plasmoid can be added/shown in two different ways:</p>
+<ol class="arabic simple">
+<li><p>It can be shown as part of the system tray Plasmoid.</p>
+<ul class="simple">
+<li><p>This is likely the preferred way of showing it and may also happen by default.</p></li>
+<li><p>Whether the Plasmoid is shown as part of the system tray Plasmoid can be configured
+in the settings of the system tray Plasmoid. You can access the settings of the
+system tray Plasmoid from its context-menu which can be opened by right-clicking on
+the arrow for expanding/collapsing.</p></li>
+<li><p>The list of entries in the system tray Plasmoid settings might show an
+invalid/disabled entry for Syncthing in some cases. There should always nevertheless
+also be a valid entry which can be used. See the
+<a class="reference external" href="https://github.com/Martchus/syncthingtray/issues/239">related issue</a> for details.</p></li>
+<li><p>This way it is also possible to show the icon only in certain states by choosing to
+show it only when important and selecting the states in the Plasmoid’s settings.</p></li>
+<li><p>Configuring the size has no effect when the Plasmoid is displayed as part of the
+system tray Plasmoid.</p></li>
+</ul>
+</li>
+<li><p>It can be added to a panel or the desktop like any other Plasmoid. <strong>Note that under
+recent Plasma versions the configuration no longer seems to be stored persistently.</strong>
+So I recommend using the previous option or following the
+<a class="reference external" href="https://github.com/Martchus/syncthingtray/issues/339">related issue</a> for workarounds.</p></li>
+</ol>
+<p>This allows you to add multiple instances of the Plasmoid but it is recommended to pick
+only one place. For that it makes also most sense to ensure the autostart of the
+stand-alone tray application is disabled. Otherwise you would end up having two icons
+at the same time (one of the Plasmoid and one of the stand-alone application).</p>
+<p>The Plasmoid cannot be closed via its context menu like the stand-alone application.
+Instead, you have to disable it in the settings of the system tray Plasmoid as explained
+before. If you have added the Plasmoid to a panel or the desktop you can delete it like
+any other Plasmoid.</p>
+<p>In case the Plasmoid won’t show up, checkout the
+“<a class="reference internal" href="#troubleshooting-kde-integration"><span class="xref myst">Troubleshooting KDE integration</span></a>” section below for
+further help.</p>
+</section>
+<section id="configuring-dolphin-integration">
+<h3>Configuring Dolphin integration<a class="headerlink" href="#configuring-dolphin-integration" title="Link to this heading">¶</a></h3>
+<p>The Dolphin integration can be enabled/disabled in Dolphin’s context menu settings. It will
+read Syncthing’s API key automatically from its config file. If your Syncthing config file is
+not in the default location you need to select it via the corresponding menu action.</p>
+</section>
+<section id="configuring-systemd-integration">
+<h3>Configuring systemd integration<a class="headerlink" href="#configuring-systemd-integration" title="Link to this heading">¶</a></h3>
+<p>The next section explains what it is good for and how to use it. If it doesn’t work on your
+system please read the subsequent sections as well before filing an issue.</p>
+<section id="using-the-systemd-integration">
+<h4>Using the systemd integration<a class="headerlink" href="#using-the-systemd-integration" title="Link to this heading">¶</a></h4>
+<p>With the system configured correctly and systemd support enabled at build-time the following
+features are available:</p>
+<ul class="simple">
+<li><p>Starting and stopping the systemd unit of Syncthing</p></li>
+<li><p>Consider the unit status when connecting to the local instance to prevent connection attempts
+when Syncthing isn’t running anyways</p></li>
+<li><p>Detect when the system has just been resumed from standby to avoid the “Disconnect”
+notification in that case</p></li>
+</ul>
+<p>However, these features are optional. To use them they must be enabled in the settings dialog
+first.</p>
+<p>It is recommended to enable “Consider unit status …”. Note that Syncthing might still not be immediately
+ready to serve API requests when the systemd unit turns active. Hence it is still required to configure
+a re-connect interval. The re-connect interval will only be in effect while the systemd unit is active.
+So despite the re-connect interval there will be no connection attempts while the systemd unit is
+inactive. That’s all the systemd integration can optimize in that regard.</p>
+<p>Be aware that Syncthing Tray assumes by default that the systemd unit is a
+<a class="reference external" href="https://wiki.archlinux.org/index.php/Systemd/User">user unit</a>. If you are using
+a regular system-wide unit (including those ending with <code class="docutils literal notranslate"><span class="pre">…&#64;username</span></code>) you need to enable the
+“System unit” checkbox in the settings. Note that starting and stopping the system-wide Syncthing
+unit requires authorization (systemd can ask through PolicyKit).</p>
+</section>
+<section id="required-system-configuration">
+<h4>Required system configuration<a class="headerlink" href="#required-system-configuration" title="Link to this heading">¶</a></h4>
+<p>The communication between Syncthing Tray and systemd is implemented using systemd’s D-Bus service.
+That means systemd’s D-Bus service (which is called <code class="docutils literal notranslate"><span class="pre">org.freedesktop.systemd1</span></code>) must be running on
+your D-Bus. For <a class="reference external" href="https://wiki.archlinux.org/index.php/Systemd/User">user units</a> the session D-Bus is
+relevant and for regular units (including those ending with <code class="docutils literal notranslate"><span class="pre">…&#64;username</span></code>) the system D-Bus is relevant.</p>
+<p>It seems that systemd’s D-Bus service is only available when D-Bus itself is started via systemd. That
+is by default the case under Arch Linux and openSUSE and likely most other modern distributions where
+it is usually started via “socket activation” (e.g. <code class="docutils literal notranslate"><span class="pre">/usr/lib/systemd/user/dbus.socket</span></code> for the session
+D-Bus).</p>
+<p>All of this counts for the session D-Bus <em>and</em> for the system D-Bus although the startup of the session
+D-Bus can be screwed up particularly easy. One easy way to screw it up is to start a second instance of
+the session D-Bus manually e.g. via <code class="docutils literal notranslate"><span class="pre">dbus-run-session</span></code>. When starting the session D-Bus this way the
+systemd integration will <em>not</em> work and you will likely end up with two session D-Bus processes. It is
+also worth noticing that you do <em>not</em> need to set the <code class="docutils literal notranslate"><span class="pre">DBUS_SESSION_BUS_ADDRESS</span></code> variable manually
+because the systemd file <code class="docutils literal notranslate"><span class="pre">dbus.socket</span></code> should take care of this.</p>
+<p>Note that the Plasma Wayland session screwed things up in the way I’ve described. This has been fixed with
+<a class="reference external" href="https://invent.kde.org/plasma/plasma-workspace/-/merge_requests/128">Only spawn dbus-run-session if there isn’t a session already</a>
+but this change might not be available on older distributions.</p>
+</section>
+</section>
+<section id="configuring-the-built-in-launcher">
+<h3>Configuring the built-in launcher<a class="headerlink" href="#configuring-the-built-in-launcher" title="Link to this heading">¶</a></h3>
+<p>The built-in launcher can be accessed and configured within the settings dialog. It is <em>not</em> available
+in the Plasmoid. It allows you to launch Syncthing</p>
+<ol class="arabic simple">
+<li><p>as an <em>external</em> process by leaving “Use built-in Syncthing library” <em>un</em>checked.</p>
+<ul class="simple">
+<li><p>When launching Syncthing this way you have to specify the path to an executable, e.g. one you
+have downloaded from the <a class="reference external" href="https://syncthing.net/downloads">upstream Syncthing website</a>. It is also
+possible use the Syncthing version built into Syncthing Tray by pointing it to the Syncthing Tray
+executable and specifying the arguments <code class="docutils literal notranslate"><span class="pre">syncthing</span> <span class="pre">serve</span></code>.</p></li>
+<li><p>When launching Syncthing as external process Syncthing Tray does not interfere with
+<a class="reference external" href="https://docs.syncthing.net/users/config.html#config-option-options.setlowpriority">Syncthing’s configuration for lowering the priority</a>.</p></li>
+</ul>
+</li>
+<li><p>as part of the Syncthing Tray UI process by checking “Use built-in Syncthing library”.</p>
+<ul class="simple">
+<li><p>This will always use the Syncthing version built into Syncthing Tray.</p></li>
+<li><p>Launching Syncthing as part of the UI process will interfere with
+<a class="reference external" href="https://docs.syncthing.net/users/config.html#config-option-options.setlowpriority">Syncthing’s configuration for lowering the priority</a>.
+You should therefore avoid using this configuration option or start Syncthing as external process
+instead. Otherwise the configuration option might have no effect or will affect the UI of Syncthing
+Tray as well causing it to become slow/unresponsive.</p></li>
+<li><p>This option might not be available on your build of Syncthing Tray, e.g. it is disabled on the
+packages I provide for GNU/Linux distributions as it makes most sense to use the
+distribution-provided version of Syncthing there.</p></li>
+</ul>
+</li>
+</ol>
+<p>It is recommended to enable “Consider process status …”. Note that Syncthing might not be immediately
+ready to serve API requests when started. Hence it is still required to configure a re-connect interval.
+The re-connect interval will only be in effect while the Syncthing process is running. So despite the
+re-connect interval there will be no connection attempts while the Syncthing process is not running.</p>
+</section>
+<section id="configuring-hotkeys">
+<h3>Configuring hotkeys<a class="headerlink" href="#configuring-hotkeys" title="Link to this heading">¶</a></h3>
+<p>Use the same approach as for launching an arbitrary application via a hotkey in your graphical
+environment. Make it invoke</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingtray</span> <span class="pre">--trigger</span></code> to show the Qt Widgets based tray menu.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingtray</span> <span class="pre">--webui</span></code> to show the web UI.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingctl</span> <span class="pre">[...]</span></code> to trigger a particular action. See <code class="docutils literal notranslate"><span class="pre">syncthingctl</span> <span class="pre">-h</span></code> for details.</p></li>
+</ul>
+<p>The Plasmoid can be shown via a hot-key as well by configuring one in the Plasmoid settings.</p>
+</section>
+</section>
+<section id="using-the-command-line-interface">
+<h2>Using the command-line interface<a class="headerlink" href="#using-the-command-line-interface" title="Link to this heading">¶</a></h2>
+<p>Checkout <code class="docutils literal notranslate"><span class="pre">syncthingctl</span> <span class="pre">--help</span></code> and <code class="docutils literal notranslate"><span class="pre">syncthingtray</span> <span class="pre">--help</span></code> for available options. More details
+can be found in the <a class="reference internal" href="docs/cli.html"><span class="std std-doc">CLI documentation</span></a>.</p>
+</section>
+<section id="download">
+<h2>Download<a class="headerlink" href="#download" title="Link to this heading">¶</a></h2>
+<p>Checkout the <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">download section on the website</a> for an overview.
+Keep reading here for a more detailed list.</p>
+<section id="source">
+<h3>Source<a class="headerlink" href="#source" title="Link to this heading">¶</a></h3>
+<p>See the <a class="reference external" href="https://github.com/Martchus/syncthingtray/releases">release section on GitHub</a>.</p>
+</section>
+<section id="packages-and-binaries">
+<h3>Packages and binaries<a class="headerlink" href="#packages-and-binaries" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Arch Linux</p>
+<ul>
+<li><p>for PKGBUILDs checkout <a class="reference external" href="https://github.com/Martchus/PKGBUILDs">my GitHub repository</a> or
+<a class="reference external" href="https://aur.archlinux.org/packages?SeB=m&amp;amp;K=Martchus">the AUR</a></p></li>
+<li><p>there is also a <a class="reference external" href="https://martchus.dyn.f3l.de/repo/arch/ownstuff">binary repository</a></p></li>
+</ul>
+</li>
+<li><p>Tumbleweed, Leap, Fedora</p>
+<ul>
+<li><p>RPM *.spec files and binaries are available via openSUSE Build Service</p>
+<ul>
+<li><p>remarks</p>
+<ul>
+<li><p>Be sure to add the repository that matches the version of your OS and to keep it
+in sync when upgrading.</p></li>
+<li><p>The linked download pages might be incomplete, use the repositories URL for a full
+list.</p></li>
+<li><p>Old packages might remain as leftovers when upgrading and need to be cleaned up
+manually, e.g. <code class="docutils literal notranslate"><span class="pre">zypper</span> <span class="pre">rm</span> <span class="pre">libsyncthingconnector1_1_20</span> <span class="pre">libsyncthingmodel1_1_20</span> <span class="pre">libsyncthingwidgets1_1_20</span></code>.</p></li>
+</ul>
+</li>
+<li><p>latest releases: <a class="reference external" href="https://software.opensuse.org/download.html?project=home:mkittler&amp;amp;package=syncthingtray">download page</a>,
+<a class="reference external" href="https://download.opensuse.org/repositories/home:/mkittler">repositories URL</a>,
+<a class="reference external" href="https://build.opensuse.org/project/show/home:mkittler">project page</a></p></li>
+<li><p>Git master: <a class="reference external" href="https://software.opensuse.org/download.html?project=home:mkittler:vcs&amp;amp;package=syncthingtray">download page</a>,
+<a class="reference external" href="https://download.opensuse.org/repositories/home:/mkittler:/vcs">repositories URL</a>,
+<a class="reference external" href="https://build.opensuse.org/project/show/home:mkittler:vcs">project page</a></p></li>
+</ul>
+</li>
+<li><p>available split packages</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code>/<code class="docutils literal notranslate"><span class="pre">syncthingtray-qt6</span></code>: Qt-widgets based GUI</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingplasmoid</span></code>/<code class="docutils literal notranslate"><span class="pre">syncthingplasmoid-qt6</span></code>: applet/plasmoid for Plasma desktop</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingfileitemaction</span></code>/<code class="docutils literal notranslate"><span class="pre">syncthingfileitemaction-qt6</span></code>: Dolphin/KIO integration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code>/<code class="docutils literal notranslate"><span class="pre">syncthingctl-qt6</span></code>: command-line interface</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Debian ≥12 “bookworm” and its derivatives (Ubuntu, Pop!_OS, etc, but not Neon)</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">syncthingtray-kde-plasma</span></code> if using KDE Plasma; otherwise, <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">syncthingtray</span></code>.</p></li>
+<li><p>Installation from a Software Centre such as <a class="reference external" href="https://apps.gnome.org/en-GB/app/org.gnome.Software">GNOME Software</a> or
+<a class="reference external" href="https://apps.kde.org/en-gb/discover/">Discover</a> should be possible as well.</p></li>
+</ul>
+</li>
+<li><p>Exherbo</p>
+<ul>
+<li><p>packages for my other project “Tag Editor” and dependencies could serve as a base and are provided
+by <a class="reference external" href="https://git.exherbo.org/summer/packages/media-sound/tageditor">the platypus repository</a></p></li>
+</ul>
+</li>
+<li><p>Gentoo</p>
+<ul>
+<li><p>there is a package in <a class="reference external" href="https://codeberg.org/Case_Of/gentoo-overlay">Case_Of’s overlay</a></p></li>
+</ul>
+</li>
+<li><p>NixOS</p>
+<ul>
+<li><p>the package syncthingtray is available from the official repositories</p></li>
+</ul>
+</li>
+<li><p>Void Linux</p>
+<ul>
+<li><p>available as split packages from the
+<a class="reference external" href="https://voidlinux.org/packages/?q=syncthingtray">official repositories</a>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code>: GUI and command-line interface</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingtray-plasma</span></code>: applet/plasmoid for Plasma desktop</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syncthingtray-dolphin</span></code>: Dolphin/KIO integration</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Other GNU/Linux systems</p>
+<ul>
+<li><p>for generic, self-contained binaries checkout the <a class="reference external" href="https://github.com/Martchus/syncthingtray/releases">release section on GitHub</a></p>
+<ul>
+<li><p>Requires glibc&gt;=2.26, OpenGL and libX11</p>
+<ul>
+<li><p>openSUSE Leap 15, Fedora 27, Debian 10 and Ubuntu 18.04 are recent enough (be sure
+the packages <code class="docutils literal notranslate"><span class="pre">libglx0</span></code>, <code class="docutils literal notranslate"><span class="pre">libopengl0</span></code> and <code class="docutils literal notranslate"><span class="pre">libegl1</span></code> are installed on Debian/Ubuntu)</p></li>
+</ul>
+</li>
+<li><p>Supports X11 and Wayland (set the environment variable <code class="docutils literal notranslate"><span class="pre">QT_QPA_PLATFORM=xcb</span></code> to disable
+native Wayland support if it does not work on your system)</p></li>
+<li><p>The built-in web view is not available in these builts as it would require shipping a full web browser engine.
+Syncthing Tray can still show the official web-based UI in a dedicated window via a Chromium-based browser you have
+already installed using its “app mode”. Alternatively, use the distribution-specific builds provided for Arch Linux,
+openSUSE and Fedora which come with the built-in web view enabled.</p></li>
+<li><p>The archive is signed with the GPG key
+<a class="reference external" href="https://keyserver.ubuntu.com/pks/lookup?search=B9E36A7275FC61B464B67907E06FE8F53CDC6A4C&amp;amp;fingerprint=on&amp;amp;op=index"><code class="docutils literal notranslate"><span class="pre">B9E36A7275FC61B464B67907E06FE8F53CDC6A4C</span></code></a> for manual verification.</p></li>
+<li><p>The executable is signed in addition using ECDSA for verification by the updater. The public key can be found
+<a class="reference external" href="https://github.com/Martchus/syncthingtray/blob/master/tray/application/main.cpp">in the source code</a> and verification
+is possible with <code class="docutils literal notranslate"><span class="pre">stsigtool</span></code> or OpenSSL.</p></li>
+</ul>
+</li>
+<li><p>a Flatpak is hosted on <a class="reference external" href="https://flathub.org/apps/io.github.martchus.syncthingtray">Flathub</a></p>
+<ul>
+<li><p>Read the <a class="reference external" href="https://github.com/flathub/io.github.martchus.syncthingtray/blob/master/README.md">README of the Flatpak</a> for
+caveats and workarounds</p></li>
+<li><p>File any Flatpak-specific issues on <a class="reference external" href="https://github.com/flathub/io.github.martchus.syncthingtray/issues">the Flatpak repository</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Windows</p>
+<ul>
+<li><p>for binaries checkout the <a class="reference external" href="https://github.com/Martchus/syncthingtray/releases">release section on GitHub</a></p>
+<ul>
+<li><p>Windows SmartScreen will likely block the execution (you’ll get a window saying “Windows protected your PC”);
+right click on the executable, select properties and tick the checkbox to allow the execution</p></li>
+<li><p>Antivirus software often <strong>wrongly</strong> considers the executable harmful. This is a known problem. Please don’t create
+issues about it.</p></li>
+<li><p>The default version is using Qt 6 and hence preferred on modern versions of Windows. The oldest version of Windows it
+supports is 64-bit Windows 10 version 1809.</p></li>
+<li><p>The Qt 5 based version should still work on older versions down to Windows 7 although this is not regularly checked.</p>
+<ul>
+<li><p>On Windows 7 the bundled Go/Syncthing will nevertheless be too new; use a version of Go/Syncthing that is <em>older</em>
+than 1.21/1.27.0 instead.</p></li>
+</ul>
+</li>
+<li><p>The Universal CRT needs to be <a class="reference external" href="https://learn.microsoft.com/en-us/cpp/windows/universal-crt-deployment#central-deployment">installed</a>.</p></li>
+<li><p>The built-in web view is not available in these builts as it would require shipping a full web browser engine.
+Syncthing Tray can still show the official web-based UI in a dedicated window via a Chromium-based browser you have
+already installed (e.g. Edge or Chrome) using its “app mode”.</p></li>
+<li><p>The archive is signed with the GPG key
+<a class="reference external" href="https://keyserver.ubuntu.com/pks/lookup?search=B9E36A7275FC61B464B67907E06FE8F53CDC6A4C&amp;amp;fingerprint=on&amp;amp;op=index"><code class="docutils literal notranslate"><span class="pre">B9E36A7275FC61B464B67907E06FE8F53CDC6A4C</span></code></a> for manual verification.</p></li>
+<li><p>The executable is signed in addition using ECDSA for verification by the updater. The public key can be found
+<a class="reference external" href="https://github.com/Martchus/syncthingtray/blob/master/tray/application/main.cpp">in the source code</a> and verification
+is possible with <code class="docutils literal notranslate"><span class="pre">stsigtool</span></code> or OpenSSL.</p></li>
+</ul>
+</li>
+<li><p>or, using Winget, type <code class="docutils literal notranslate"><span class="pre">winget</span> <span class="pre">install</span> <span class="pre">Martchus.syncthingtray</span></code> in a Command Prompt window.</p></li>
+<li><p>or, using <a class="reference external" href="https://scoop.sh">Scoop</a>, type <code class="docutils literal notranslate"><span class="pre">scoop</span> <span class="pre">bucket</span> <span class="pre">add</span> <span class="pre">extras</span> <span class="pre">&amp;</span> <span class="pre">scoop</span> <span class="pre">install</span> <span class="pre">extras/syncthingtray</span></code>.</p></li>
+<li><p>or, via this <a class="reference external" href="https://community.chocolatey.org/packages/syncthingtray">Chocolatey package</a>, type <code class="docutils literal notranslate"><span class="pre">choco</span> <span class="pre">install</span> <span class="pre">syncthingtray</span></code>.</p></li>
+<li><p>for mingw-w64 PKGBUILDs checkout <a class="reference external" href="https://github.com/Martchus/PKGBUILDs">my GitHub repository</a></p></li>
+</ul>
+</li>
+<li><p>FreeBSD</p>
+<ul>
+<li><p>the package syncthingtray is available from <a class="reference external" href="https://www.freshports.org/deskutils/syncthingtray">FreeBSD Ports</a></p></li>
+</ul>
+</li>
+<li><p>Mac OS X/macOS</p>
+<ul>
+<li><p>the package syncthingtray is available from <a class="reference external" href="https://ports.macports.org/port/syncthingtray/">MacPorts</a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="contributing-building-developing-building-debugging">
+<h2>Contributing, building, developing, building, debugging<a class="headerlink" href="#contributing-building-developing-building-debugging" title="Link to this heading">¶</a></h2>
+<p>There is separate <a class="reference internal" href="docs/devel.html"><span class="std std-doc">documentation on these topics</span></a>.</p>
+</section>
+<section id="legal-information">
+<h2>Legal information<a class="headerlink" href="#legal-information" title="Link to this heading">¶</a></h2>
+<section id="copyright-notice-and-license">
+<h3>Copyright notice and license<a class="headerlink" href="#copyright-notice-and-license" title="Link to this heading">¶</a></h3>
+<p>Copyright © 2016-2025 Marius Kittler</p>
+<p>All code - unless stated otherwise in a comment on top of the file - is licensed under <a class="reference download internal" download="" href="_downloads/9879d6db96fd29134fc802214163b95a/LICENSE"><span class="xref download myst">GPL-2-or-later</span></a>. This does <em>not</em> apply
+to code contained in Git repositories included as Git submodule (which contain their own README and licensing information).</p>
+</section>
+<section id="attribution-for-3rd-party-content">
+<h3>Attribution for 3rd party content<a class="headerlink" href="#attribution-for-3rd-party-content" title="Link to this heading">¶</a></h3>
+<p>Syncthing Tray contains icons from various sources:</p>
+<ul class="simple">
+<li><p>Some icons are taken from <a class="reference external" href="https://forkaweso.me/Fork-Awesome">Fork Awesome</a> (see <a class="reference external" href="https://forkaweso.me/Fork-Awesome/license">their license</a>).
+These are provided via <a class="reference external" href="https://github.com/Martchus/qtforkawesome">qtforkawesome</a>.</p></li>
+<li><p>The Syncthing icons are taken from the <a class="reference external" href="https://github.com/syncthing/syncthing">Syncthing</a> project.</p></li>
+<li><p>The icons on <a class="reference external" href="https://martchus.github.io/syncthingtray">the website</a> are from
+<a class="reference external" href="https://materialdesignicons.com">Material Design Icons</a>.</p></li>
+<li><p>All other icons found in this repository are taken from the <a class="reference external" href="https://invent.kde.org/frameworks/breeze-icons">KDE/Breeze</a> project.</p></li>
+</ul>
+<p>None of these icons have been (intentionally) modified so no copyright for modifications is asserted.</p>
+<p>Some of the code is based on code from other open source projects:</p>
+<ul class="simple">
+<li><p>Code in <code class="docutils literal notranslate"><span class="pre">tray/gui/quick/quickicon.cpp</span></code> and the corresponding header file originates from
+<a class="reference external" href="https://invent.kde.org/frameworks/kirigami">Kirigami</a>. The comments at the beginning of those files state the original
+authors/contributors.</p></li>
+<li><p>Parts of <code class="docutils literal notranslate"><span class="pre">tray/android/src/io/github/martchus/syncthingtray/Util.java</span></code> are based on
+<a class="reference external" href="https://github.com/Catfriend1/syncthing-android/blob/main/app/src/main/java/com/nutomic/syncthingandroid/util/FileUtils.java">com.nutomic.syncthingandroid.util</a> and
+<a class="reference external" href="https://github.com/Catfriend1/syncthing-android/blob/main/app/src/main/java/com/nutomic/syncthingandroid/service/SyncthingRunnable.java">com.nutomic.syncthingandroid.service</a>.</p></li>
+<li><p>The icon files <code class="docutils literal notranslate"><span class="pre">ic_stat_notify*</span></code> under <code class="docutils literal notranslate"><span class="pre">tray/android/res</span></code> and <code class="docutils literal notranslate"><span class="pre">tray/resources</span></code> are taken from
+<a class="reference external" href="https://github.com/Catfriend1/syncthing-android/tree/main/app/src/main/res">syncthing-android</a>.</p></li>
+<li><p>The code in <code class="docutils literal notranslate"><span class="pre">tray/android/src/io/github/martchus/syncthingtray/DocumentsProvider.java</span></code> is based on
+<a class="reference external" href="https://github.com/termux/termux-app/blob/master/app/src/main/java/com/termux/filepicker/TermuxDocumentsProvider.java"><code class="docutils literal notranslate"><span class="pre">TermuxDocumentsProvider.java</span></code> from Termux</a>.</p></li>
+<li><p>Many of the descriptions used in the Qt Quick GUI are taken from <a class="reference external" href="https://github.com/syncthing/syncthing">Syncthing</a>
+and <a class="reference external" href="https://github.com/syncthing/docs">its documentation</a>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">uncamel</span></code> function used in the Qt Quick GUI is taken from <a class="reference external" href="https://github.com/syncthing/syncthing">Syncthing</a>.</p></li>
+</ul>
+<p>The original code has been modified. Copyright as mentioned in the previous section applies to modifications.</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Syncthing Tray (git)</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#supported-platforms">Supported platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#does-this-launch-or-bundle-syncthing-itself-what-about-my-existing-syncthing-installation">Does this launch or bundle Syncthing itself? What about my existing Syncthing installation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-and-deinstallation">Installation and deinstallation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-command-line-interface">Using the command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#download">Download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributing-building-developing-building-debugging">Contributing, building, developing, building, debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#legal-information">Legal information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/cli.html">Using the command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/known_bugs_and_workarounds.html">Known bugs and workarounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/android.html">Using the Android app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/devel.html">Contributing, building, developing, debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plasmoid/testing.html">Testing and debugging Plasmoid for Plasma with Qt Creator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plasmoid/testing.html#testing-against-a-development-build-of-plasma">Testing against a development build of Plasma</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fileitemactionplugin/testing.html">Testing and debugging Dolphin/KIO plugin with Qt Creator</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Documentation</a></li>
+      <li>Next: <a href="docs/screenshots.html" title="next chapter">Screenshots</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;Martchus.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

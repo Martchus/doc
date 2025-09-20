@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Contributing, building, developing, debugging &#8212; Syncthing Tray (git) 2025-09-02 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=63911549"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Testing and debugging Plasmoid for Plasma with Qt Creator" href="../plasmoid/testing.html" />
+    <link rel="prev" title="Using the Android app" href="android.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="contributing-building-developing-debugging">
+<h1>Contributing, building, developing, debugging<a class="headerlink" href="#contributing-building-developing-debugging" title="Link to this heading">¶</a></h1>
+<p>The follow sections explain how to build and develop Syncthing Tray, how to add translations and debug
+certain features.</p>
+<section id="build-instructions">
+<h2>Build instructions<a class="headerlink" href="#build-instructions" title="Link to this heading">¶</a></h2>
+<p>The application depends on <a class="reference external" href="https://github.com/Martchus/cpp-utilities">c++utilities</a>,
+<a class="reference external" href="https://github.com/Martchus/qtutilities">qtutilities</a> and
+<a class="reference external" href="https://github.com/Martchus/qtforkawesome">qtforkawesome</a> and is built the same way as these libraries.
+For basic instructions and platform-specific details checkout the README file of
+<a class="reference external" href="https://github.com/Martchus/cpp-utilities">c++utilities</a>.</p>
+<p>To avoid building c++utilities/qtutilities/qtforkawesome separately, follow the instructions under
+“<a class="reference internal" href="#building-this-straight"><span class="xref myst">Building this straight</span></a>”. There’s also documentation about
+<a class="reference external" href="https://github.com/Martchus/cpp-utilities/blob/master/doc/buildvariables.md">various build variables</a> which
+can be passed to CMake to influence the build.</p>
+<section id="further-dependencies">
+<h3>Further dependencies<a class="headerlink" href="#further-dependencies" title="Link to this heading">¶</a></h3>
+<p>The following Qt modules are required (only the latest Qt 5 and Qt 6 version tested): Qt Core, Qt Concurrent,
+Qt Network, Qt D-Bus, Qt Gui, Qt Widgets, Qt Svg, Qt WebEngineWidgets/WebKitWidgets</p>
+<p>It is recommended to use at least Qt 5.14 to avoid limitations in previous versions (see
+<a class="reference internal" href="known_bugs_and_workarounds.html"><span class="std std-doc">the documentation on known bugs</span></a> for details).</p>
+<p>The built-in web view and therefore the modules WebEngineWidgets/WebKitWidgets are optional (see
+section “<a class="reference internal" href="#select-qt-module-for-web-view-and-javascript"><span class="xref myst">Select Qt module for web view and JavaScript</span></a>”).</p>
+<p>The Qt Quick UI needs at least Qt 6.9 and also additional Qt modules found in the Qt Declarative repository.
+It also contains experimental code for a built-in web view which uses the Qt WebView module. This is optional
+and not used at this point.</p>
+<p>When building for Android at least Qt 6.9 is required.</p>
+<p>To build the plugin for Dolphin integration KIO is also required. To skip building the plugin,
+add <code class="docutils literal notranslate"><span class="pre">-DNO_FILE_ITEM_ACTION_PLUGIN:BOOL=ON</span></code> to the CMake arguments.</p>
+<p>To build the Plasmoid for the Plasma desktop, the Qt module QML and the KDE Frameworks module Plasma are
+required as well. Additionally, the Plasmoid requires the latest Qt version (5.15) for certain Qt Quick features.
+To skip building the Plasmoid, add <code class="docutils literal notranslate"><span class="pre">-DNO_PLASMOID:BOOL=ON</span></code> to the CMake arguments.</p>
+<p>To specify the major Qt version to use, set <code class="docutils literal notranslate"><span class="pre">QT_PACKAGE_PREFIX</span></code> (e.g. add <code class="docutils literal notranslate"><span class="pre">-DQT_PACKAGE_PREFIX:STRING=Qt6</span></code>
+to the CMake arguments). There’s also <code class="docutils literal notranslate"><span class="pre">KF_PACKAGE_PREFIX</span></code> for KDE dependencies. Note that KDE integrations
+always require the same major Qt version as your KDE installation uses.</p>
+<hr class="docutils" />
+<p>The following Boost libraries are required: <code class="docutils literal notranslate"><span class="pre">Boost.Asio</span></code>, <code class="docutils literal notranslate"><span class="pre">Boost.Process</span></code>, <code class="docutils literal notranslate"><span class="pre">Boost.Filesystem</span></code></p>
+<p>The launcher uses these libraries by default to handle sub processes correctly (and avoid leftover processes).
+Add <code class="docutils literal notranslate"><span class="pre">-DUSE_BOOST_PROCESS:BOOL:OFF</span></code> to the CMake arguments to get rid of the dependency to Boost libraries.
+This disables handling sub processes and <code class="docutils literal notranslate"><span class="pre">QProcess</span></code> (from Qt Core) is used instead.</p>
+<hr class="docutils" />
+<p>To build Syncthing itself as a library Go is required and Syncthing needs to be checked out as a Git submodule.
+Checkout the <a class="reference external" href="https://docs.syncthing.net/dev/building#prerequisites">documentation of Syncthing itself</a> for
+details.</p>
+<p>Sometimes it can be useful to use a different version of Go then what is provided by the packaging one would
+normally use. To download and install a different version of Go into <code class="docutils literal notranslate"><span class="pre">GOPATH</span></code> one can invoke the following
+command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>go install golang.org/dl/go1.22.11@latest &amp;&amp; $GOPATH/src/go/bin/go1.22.11 download`
+</pre></div>
+</div>
+<p>Checkout the <a class="reference external" href="https://go.dev/doc/devel/release">release history of Go</a> for available versions.</p>
+<p>Then the version can be used by adding <code class="docutils literal notranslate"><span class="pre">-DGO_BIN=$GOPATH/bin/go1.22.11</span></code> to the CMake arguments. It is not
+necessary to clean an existing build directly. All relevant parts will be re-built as necessary with the
+new version.</p>
+<hr class="docutils" />
+<p>It is also possible to build only the CLI (<code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code>) by adding <code class="docutils literal notranslate"><span class="pre">-DNO_MODEL:BOOL=ON</span></code> and
+<code class="docutils literal notranslate"><span class="pre">-DNO_FILE_ITEM_ACTION_PLUGIN:BOOL=ON</span></code> to the CMake arguments. Then only the Qt modules <code class="docutils literal notranslate"><span class="pre">core</span></code>,
+<code class="docutils literal notranslate"><span class="pre">network</span></code> and <code class="docutils literal notranslate"><span class="pre">dbus</span></code> are required.</p>
+<hr class="docutils" />
+<p>Building the testsuite requires CppUnit and Syncthing itself. Tests will spawn (and eventually terminate)
+a test instance of Syncthing that does not affect a possibly existing Syncthing setup on the build host.</p>
+</section>
+<section id="further-build-time-configuration">
+<h3>Further build-time configuration<a class="headerlink" href="#further-build-time-configuration" title="Link to this heading">¶</a></h3>
+<p>The systemd integration can be explicitly enabled/disabled at compile time by adding
+<code class="docutils literal notranslate"><span class="pre">-DSYSTEMD_SUPPORT=ON/OFF</span></code> to the CMake arguments. If the systemd integration does not work be sure your
+version of Syncthing Tray has been compiled with systemd support.</p>
+<p>Note for distributors: There will be no hard dependency to systemd in any case. Distributions supporting
+alternative init systems do <em>not</em> need to provide differently configured versions of Syncthing Tray.
+Disabling the systemd integration is mainly intended for systems which do not use systemd at all (e.g.
+Windows and MacOS).</p>
+<hr class="docutils" />
+<p>It is possible to build Syncthing itself as a library as part of Syncthing Tray and configure its
+Syncthing launcher to make use of this “built-in” version as an alternative way of launching Syncthing.
+The build Syncthing and use of it in the launcher can be enabled by adding <code class="docutils literal notranslate"><span class="pre">-DNO_LIBSYNCTHING=OFF</span></code> and
+<code class="docutils literal notranslate"><span class="pre">-DUSE_LIBSYNCTHING=ON</span></code> to the CMake arguments respectively. When building Syncthing itself a Go build
+environment is required.</p>
+<hr class="docutils" />
+<p>The updater can be explicitly enabled/disabled by adding <code class="docutils literal notranslate"><span class="pre">-DSETUP_TOOLS=ON/OFF</span></code> to the CMake arguments
+when compiling <code class="docutils literal notranslate"><span class="pre">qtutilities</span></code> and <code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code>. When enabled, <code class="docutils literal notranslate"><span class="pre">c++utilities</span></code> needs to compiled with
+<code class="docutils literal notranslate"><span class="pre">-DUSE_LIBARCHIVE=ON</span></code> and <code class="docutils literal notranslate"><span class="pre">libarchive</span></code> becomes a dependency. With the built-in version of Syncthing
+disabled this will also lead to a hard dependency on the crypo library of OpenSSL for signature
+verification. (With the built-in version of Syncthing enabled the Go-based crypto code from Syncthing
+itself is used instead of OpenSSL.)</p>
+</section>
+<section id="building-this-straight">
+<h3>Building this straight<a class="headerlink" href="#building-this-straight" title="Link to this heading">¶</a></h3>
+<ol class="arabic" start="0">
+<li><p>Install (preferably the latest version of) the GCC toolchain or Clang, the required Qt modules,
+iconv, CMake and Ninja.</p></li>
+<li><p>Get the sources. For the latest version from Git clone the following repositories:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="s2">&quot;$SOURCES&quot;</span>
+<span class="n">export</span> <span class="n">MSYS</span><span class="o">=</span><span class="n">winsymlinks</span><span class="p">:</span><span class="n">nativestrict</span> <span class="c1"># only required when using MSYS2</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="o">-</span><span class="n">c</span> <span class="n">core</span><span class="o">.</span><span class="n">symlinks</span><span class="o">=</span><span class="n">true</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">cpp</span><span class="o">-</span><span class="n">utilities</span><span class="o">.</span><span class="n">git</span> <span class="n">c</span><span class="o">++</span><span class="n">utilities</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="o">-</span><span class="n">c</span> <span class="n">core</span><span class="o">.</span><span class="n">symlinks</span><span class="o">=</span><span class="n">true</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">qtutilities</span><span class="o">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="o">-</span><span class="n">c</span> <span class="n">core</span><span class="o">.</span><span class="n">symlinks</span><span class="o">=</span><span class="n">true</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">qtforkawesome</span><span class="o">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="o">-</span><span class="n">c</span> <span class="n">core</span><span class="o">.</span><span class="n">symlinks</span><span class="o">=</span><span class="n">true</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ForkAwesome</span><span class="o">/</span><span class="n">Fork</span><span class="o">-</span><span class="n">Awesome</span><span class="o">.</span><span class="n">git</span> <span class="n">forkawesome</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="o">-</span><span class="n">c</span> <span class="n">core</span><span class="o">.</span><span class="n">symlinks</span><span class="o">=</span><span class="n">true</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">syncthingtray</span><span class="o">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="o">-</span><span class="n">c</span> <span class="n">core</span><span class="o">.</span><span class="n">symlinks</span><span class="o">=</span><span class="n">true</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">subdirs</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">core.symlinks=true</span></code> is only required under Windows to handle symlinks correctly. This requires a
+recent Git version and a filesystem which supports symlinks (NTFS works). Additionally, you need to
+<a class="reference external" href="https://learn.microsoft.com/en-us/gaming/game-bar/guide/developer-mode">enable Windows Developer Mode</a>.
+If you run into “not found” errors on symlink creation use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">reset</span> <span class="pre">--hard</span></code> within the repository to
+fix this.</p>
+</li>
+<li><p>Configure the build</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="s2">&quot;$BUILD_DIR&quot;</span>
+<span class="n">cmake</span> \
+ <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Release</span> \
+ <span class="o">-</span><span class="n">DCMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="s2">&quot;/install/prefix&quot;</span> \
+ <span class="o">-</span><span class="n">DFORK_AWESOME_FONT_FILE</span><span class="o">=</span><span class="s2">&quot;$SOURCES/forkawesome/fonts/forkawesome-webfont.woff2&quot;</span> \
+ <span class="o">-</span><span class="n">DFORK_AWESOME_ICON_DEFINITIONS</span><span class="o">=</span><span class="s2">&quot;$SOURCES/forkawesome/src/icons/icons.yml&quot;</span> \
+ <span class="s2">&quot;$SOURCES/subdirs/syncthingtray&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">/install/prefix</span></code> with the directory where you want to install.</p></li>
+<li><p>Checkout the “<a class="reference external" href="https://github.com/Martchus/qtforkawesome/#providing-the-font-file">Providing the font file</a>”
+section of qtforkawesome’s README for details regarding the
+ForkAwesome-related parameters.</p></li>
+</ul>
+</li>
+<li><p>Build and install everything in one step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="s2">&quot;$BUILD_DIR&quot;</span>
+<span class="n">ninja</span> <span class="n">install</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If the install directory is not writable, do <strong>not</strong> conduct the build as root. Instead, set <code class="docutils literal notranslate"><span class="pre">DESTDIR</span></code> to a
+writable location (e.g. <code class="docutils literal notranslate"><span class="pre">DESTDIR=&quot;temporary/install/dir&quot;</span> <span class="pre">ninja</span> <span class="pre">install</span></code>) and move the files from there to
+the desired location afterwards.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="select-qt-module-for-web-view-and-javascript">
+<h3>Select Qt module for web view and JavaScript<a class="headerlink" href="#select-qt-module-for-web-view-and-javascript" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">-DWEBVIEW_PROVIDER:STRING=webkit/webengine/none</span></code> to the CMake arguments to use either Qt WebKit (works with
+‘revived’ version as well), Qt WebEngine or no web view at all. If no web view is used, the Syncthing web UI is
+opened in the default web browser. Otherwise the user can choose between the built-in web view and the web browser.
+Note that this is only about the Qt Widgets based UI. The Qt Quick based UI uses Qt WebView if available.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">-DJS_PROVIDER:STRING=script/qml/none</span></code> to the CMake arguments to use either Qt Script, Qt QML or no JavaScript
+engine at all. If no JavaScript engine is used, the CLI does not support scripting configuration changes.</p></li>
+</ul>
+</section>
+<section id="troubleshooting-kde-integration">
+<h3>Troubleshooting KDE integration<a class="headerlink" href="#troubleshooting-kde-integration" title="Link to this heading">¶</a></h3>
+<p>All KDE integrations are provided for KDE 5 and 6. The Qt version you have built Syncthing Tray against
+must match the KDE version you want to build the integrations for.</p>
+<p>If the Dolphin integration or the Plasmoid does not work, check whether the files for those components
+have been installed in the right directories.</p>
+<p>For instance, under Tumbleweed it looks like this for the Plasmoid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib64</span><span class="o">/</span><span class="n">qt5</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">plasma</span><span class="o">/</span><span class="n">applets</span><span class="o">/</span><span class="n">libsyncthingplasmoid</span><span class="o">.</span><span class="n">so</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">kservices5</span><span class="o">/</span><span class="n">plasma</span><span class="o">-</span><span class="n">applet</span><span class="o">-</span><span class="n">martchus</span><span class="o">.</span><span class="n">syncthingplasmoid</span><span class="o">.</span><span class="n">desktop</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">plasma</span><span class="o">/</span><span class="n">plasmoids</span><span class="o">/</span><span class="n">martchus</span><span class="o">.</span><span class="n">syncthingplasmoid</span><span class="o">/</span><span class="n">contents</span><span class="o">/</span><span class="n">ui</span><span class="o">/*.</span><span class="n">qml</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">plasma</span><span class="o">/</span><span class="n">plasmoids</span><span class="o">/</span><span class="n">martchus</span><span class="o">.</span><span class="n">syncthingplasmoid</span><span class="o">/</span><span class="n">metadata</span><span class="o">.</span><span class="n">desktop</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">plasma</span><span class="o">/</span><span class="n">plasmoids</span><span class="o">/</span><span class="n">martchus</span><span class="o">.</span><span class="n">syncthingplasmoid</span><span class="o">/</span><span class="n">metadata</span><span class="o">.</span><span class="n">json</span>
+
+</pre></div>
+</div>
+<p>The files for the Dolphin integration look like this under Tumbleweed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib64</span><span class="o">/</span><span class="n">qt5</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">libsyncthingfileitemaction</span><span class="o">.</span><span class="n">so</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">kservices5</span><span class="o">/</span><span class="n">syncthingfileitemaction</span><span class="o">.</span><span class="n">desktop</span>
+</pre></div>
+</div>
+<p>These examples were for KDE 5. It looks a bit different for KDE 6. Checkout my Arch Linux and
+openSUSE packaging for further examples.</p>
+<p>The directory where the <code class="docutils literal notranslate"><span class="pre">*.so</span></code> file needs to be installed to, seems to differ from distribution to
+distribution. The right directory for your distribution can be queried using qmake using, e.g.
+<code class="docutils literal notranslate"><span class="pre">qmake-qt5</span> <span class="pre">-query</span> <span class="pre">QT_INSTALL_PLUGINS</span></code> or <code class="docutils literal notranslate"><span class="pre">qmake6</span> <span class="pre">-query</span> <span class="pre">QT_INSTALL_PLUGINS</span></code> depending on the Qt
+version. In doubt, just look where other Qt plugins are stored.</p>
+<p>The build system is able to do that query automatically. In case this does not work, it is also
+possible to specify the directory manually, e.g. for Tumbleweed one would add
+<code class="docutils literal notranslate"><span class="pre">-DQT_PLUGIN_DIR=/usr/lib64/qt6/plugins</span></code> to the CMake arguments.</p>
+<hr class="docutils" />
+<p>Also be sure that the version of the Plasma framework the Plasmoid was built against is <em>not</em> newer
+than the version actually installed on the system. This can happen if repositories are misconfigured,
+e.g. when using Fedora 39 but adding the Fedora 40 repo.</p>
+<hr class="docutils" />
+<p>If the Plasmoid still won’t load, checkout the log of <code class="docutils literal notranslate"><span class="pre">plasmashell</span></code>/<code class="docutils literal notranslate"><span class="pre">plasmoidviewer</span></code>/<code class="docutils literal notranslate"><span class="pre">plasmawindowed</span></code>.
+Also consider using strace to find out at which paths the shell is looking for <code class="docutils literal notranslate"><span class="pre">*.desktop</span></code> and
+<code class="docutils literal notranslate"><span class="pre">*.so</span></code> files.</p>
+<p>For a development setup of the KDE integration, continue reading the subsequent section.</p>
+</section>
+</section>
+<section id="translations">
+<h2>Translations<a class="headerlink" href="#translations" title="Link to this heading">¶</a></h2>
+<p>Currently translations for English and German are available. Qt’s built-in localization/translation
+framework is used under the hood.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> has not been internationalized yet so it supports only English.</p>
+<section id="add-a-new-locale">
+<h3>Add a new locale<a class="headerlink" href="#add-a-new-locale" title="Link to this heading">¶</a></h3>
+<p>Translations for further locales can be added quite easily:</p>
+<ol class="arabic simple">
+<li><p>Append a new translation file for the desired locale to the <code class="docutils literal notranslate"><span class="pre">TS_FILES</span></code> list
+in <code class="docutils literal notranslate"><span class="pre">connector/CMakeLists.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">model/CMakeLists.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">widgets/CMakeLists.txt</span></code>,
+<code class="docutils literal notranslate"><span class="pre">fileitemactionplugin/CMakeLists.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">plasmoid/CMakeLists.txt</span></code> and
+<code class="docutils literal notranslate"><span class="pre">tray/CMakeLists.txt</span></code>.</p></li>
+<li><p>Configure a new build, e.g. follow steps under <em><a class="reference internal" href="#building-this-straight"><span class="xref myst">Building this straight</span></a></em>.</p></li>
+<li><p>Conduct a full build or generate only translation files via the <code class="docutils literal notranslate"><span class="pre">translations</span></code> target.</p></li>
+<li><p>New translation files should have been created by the build system under
+<code class="docutils literal notranslate"><span class="pre">connector/translations</span></code>, <code class="docutils literal notranslate"><span class="pre">model/translations</span></code>, <code class="docutils literal notranslate"><span class="pre">widgets/translations</span></code>,
+<code class="docutils literal notranslate"><span class="pre">fileitemactionplugin/translations</span></code>, <code class="docutils literal notranslate"><span class="pre">plasmoid/translations</span></code> and
+<code class="docutils literal notranslate"><span class="pre">tray/translations</span></code> and the <code class="docutils literal notranslate"><span class="pre">translations</span></code> folder of <code class="docutils literal notranslate"><span class="pre">qtutilities</span></code>.</p></li>
+<li><p>Open the files with Qt Linguist to add translations. Qt Linguist is part of
+the <a class="reference external" href="http://code.qt.io/cgit/qt/qttools.git/">Qt Tools repository</a> and its usage
+is <a class="reference external" href="http://doc.qt.io/qt-5/linguist-translators.html">well documented</a>.</p></li>
+</ol>
+</section>
+<section id="extend-update-existing-translations">
+<h3>Extend/update existing translations<a class="headerlink" href="#extend-update-existing-translations" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>For English, update the corresponding string literals within the source code.</p></li>
+<li><p>If necessary, sync the translation files with the source code like in step <code class="docutils literal notranslate"><span class="pre">2.</span></code>/<code class="docutils literal notranslate"><span class="pre">3.</span></code> of
+“<a class="reference internal" href="#add-a-new-locale"><span class="xref myst">Add a new locale</span></a>”. Check that no translations have been lost (except ones which are no
+longer required of course).</p></li>
+<li><p>Change the strings within the translation files found within the <code class="docutils literal notranslate"><span class="pre">translations</span></code>
+directories like in step <code class="docutils literal notranslate"><span class="pre">4.</span></code>/<code class="docutils literal notranslate"><span class="pre">5.</span></code> of “<a class="reference internal" href="#add-a-new-locale"><span class="xref myst">Add a new locale</span></a>”.</p></li>
+</ul>
+</section>
+<section id="remarks">
+<h3>Remarks<a class="headerlink" href="#remarks" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Syncthing Tray displays also text from <a class="reference external" href="https://github.com/Martchus/qtutilities">qtutilities</a>.
+Hence it makes sense adding translations there as well (following the same procedure).</p></li>
+<li><p>The CLI <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> currently does not support translations.</p></li>
+</ul>
+</section>
+</section>
+<section id="using-backend-libraries">
+<h2>Using backend libraries<a class="headerlink" href="#using-backend-libraries" title="Link to this heading">¶</a></h2>
+<p>The contained backend libraries (which provide connecting to Syncthing, data models and more) are written for internal
+use within the components contained by this repository.</p>
+<p>Hence those libraries do <em>not</em> provide a stable ABI/API. If you like to
+use them to develop Syncthing integration or tooling with Qt and C++, it makes most sense to contribute it as an additional component
+directly to this repository. Then I will be able to take it into account when changing the API.</p>
+</section>
+<section id="kde-integration">
+<h2>KDE integration<a class="headerlink" href="#kde-integration" title="Link to this heading">¶</a></h2>
+<p>Since the Dolphin integration and the Plasmoid are plugins, testing and debugging requires a few extra steps.
+See <a class="reference internal" href="../fileitemactionplugin/testing.html"><span class="std std-doc">Testing and debugging Dolphin/KIO plugin with Qt Creator</span></a>
+and <a class="reference internal" href="../plasmoid/testing.html"><span class="std std-doc">Testing and debugging Plasmoid with Qt Creator</span></a>.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading">¶</a></h2>
+<p>It is possible to turn on logging of the underlying library by setting environment variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_LOG_ALL</span></code>: log everything mentioned in points below</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_LOG_API_CALLS</span></code>: log calls to Syncthing’s REST-API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_LOG_API_REPLIES</span></code>: log replies from Syncthing’s REST-API (except events)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_LOG_EVENTS</span></code>: log events emitted by Syncthing’s events REST-API endpoint</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_LOG_DIRS_OR_DEVS_RESETTED</span></code>: log when folders/devices are internally reset</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_LOG_NOTIFICATIONS</span></code>: log computed high-level notifications/events</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_LOG_CERT_LOADING</span></code>: log loading of the (self-signed) certificate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_LOG_JS_CONSOLE</span></code>: log message from the JavaScript console of the built-in web view</p></li>
+</ul>
+<p>On Windows, you’ll have to use the <code class="docutils literal notranslate"><span class="pre">syncthingtray-cli</span></code> executable to see output in the terminal.</p>
+</section>
+<section id="useful-environment-variables-for-development">
+<h2>Useful environment variables for development<a class="headerlink" href="#useful-environment-variables-for-development" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">QT_QPA_PLATFORM</span></code>: set to <code class="docutils literal notranslate"><span class="pre">offscreen</span></code> to disable graphical output, e.g. to run tests in headless
+environment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QT_QPA_PLATFORMTHEME</span></code>: the platform theme to use (e.g. <code class="docutils literal notranslate"><span class="pre">gtk3</span></code>) which influences file dialogs and
+other parts of the UI where Qt can make use of native APIs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QSG_RHI_BACKEND</span></code>: set the underlying graphics API used by the Qt Quick GUI, checkout the
+<a class="reference external" href="https://doc.qt.io/qt-6/qtquick-visualcanvas-scenegraph-renderer.html#rendering-via-the-qt-rendering-hardware-interface">Qt documentation</a>
+for details</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QT_QUICK_CONTROLS_STYLE</span></code>: the style to use in the Qt Quick GUI, checkout the
+<a class="reference external" href="https://doc.qt.io/qt-6/qtquickcontrols-styles.html">Qt documentation</a> for available options</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QT_QUICK_CONTROLS_MATERIAL_THEME</span></code>/<code class="docutils literal notranslate"><span class="pre">QT_QUICK_CONTROLS_UNIVERSAL_THEME</span></code>: the theme to use in the Qt
+Quick GUI, the variable and options depend on the style being used</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_SYNCTHING_CONFIG_DIR</span></code>: override the path where Syncthing Tray’s backend expects
+Syncthing’s <code class="docutils literal notranslate"><span class="pre">config.xml</span></code> file to be in</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_FAKE_FIRST_LAUNCH</span></code>: assume Syncthing Tray (or the Plasmoid) has been launched for the
+first time</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_ENABLE_WIP_FEATURES</span></code>: enable work-in-progress/experimental features</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_SINGLE_INSTANCE_ID</span></code>: override the identifier used to determine whether another running
+instance of Syncthing Tray is relevant in terms of the single-instance behavior</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_QML_ENTRY_POINT_PATH</span></code>: specifies the Qt Quick GUI entry point to use externally provided
+QML code, e.g. set to something like <code class="docutils literal notranslate"><span class="pre">G:\projects\main\syncthingtray\tray\gui\qml\AppWindow.qml</span></code>; useful
+to hot-reload the Qt Quick GUI with QML code changes with F5 without recompiling and relaunching the
+application</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_QML_ENTRY_POINT_TYPE</span></code>: specifies the Qt Quick GUI entry point to use the specified
+QML module instead of the usual <code class="docutils literal notranslate"><span class="pre">AppWindow</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHING_PATH</span></code>: override the path of Syncthing’s executable when running tests, also recognized by
+the wizard</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHING_PORT</span></code>: override the port of the Syncthing test instance spawned when running tests</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_SYSTEMD_USER_UNIT</span></code>: override the name of the systemd user-unit checked by the wizard’s
+setup detection</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_CHROMIUM_BASED_BROWSER</span></code>: override the path of the Chromium-based browser to open
+Syncthing in app mode</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_NATIVE_POPUPS</span></code>: set to <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code> to disable/enable native popups in the Qt Quick GUI.
+Note that this is always disabled on platforms where it doesn’t work anyway.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_USE_DEPRECATED_ROUTES</span></code>: change whether to use deprecated routes (enabled by
+default for compatibility with older Syncthing versions, set to <code class="docutils literal notranslate"><span class="pre">0</span></code> to change the behavior)</p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Syncthing Tray (git)</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Using the command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="known_bugs_and_workarounds.html">Known bugs and workarounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="android.html">Using the Android app</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing, building, developing, debugging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#build-instructions">Build instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#translations">Translations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-backend-libraries">Using backend libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kde-integration">KDE integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logging">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#useful-environment-variables-for-development">Useful environment variables for development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plasmoid/testing.html">Testing and debugging Plasmoid for Plasma with Qt Creator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plasmoid/testing.html#testing-against-a-development-build-of-plasma">Testing against a development build of Plasma</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fileitemactionplugin/testing.html">Testing and debugging Dolphin/KIO plugin with Qt Creator</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="android.html" title="previous chapter">Using the Android app</a></li>
+      <li>Next: <a href="../plasmoid/testing.html" title="next chapter">Testing and debugging Plasmoid for Plasma with Qt Creator</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;Martchus.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/docs/devel.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
