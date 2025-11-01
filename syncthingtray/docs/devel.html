@@ -42,7 +42,7 @@ certain features.</p>
 <p>The application depends on <a class="reference external" href="https://github.com/Martchus/cpp-utilities">c++utilities</a>,
 <a class="reference external" href="https://github.com/Martchus/qtutilities">qtutilities</a> and
 <a class="reference external" href="https://github.com/Martchus/qtforkawesome">qtforkawesome</a> and is built the same way as these libraries.
-For basic instructions and platform-specific details checkout the README file of
+For basic instructions and platform-specific details check out the README file of
 <a class="reference external" href="https://github.com/Martchus/cpp-utilities">c++utilities</a>.</p>
 <p>To avoid building c++utilities/qtutilities/qtforkawesome separately, follow the instructions under
 “<a class="reference internal" href="#building-this-straight"><span class="xref myst">Building this straight</span></a>”. There’s also documentation about
@@ -75,7 +75,7 @@ Add <code class="docutils literal notranslate"><span class="pre">-DUSE_BOOST_PRO
 This disables handling sub processes and <code class="docutils literal notranslate"><span class="pre">QProcess</span></code> (from Qt Core) is used instead.</p>
 <hr class="docutils" />
 <p>To build Syncthing itself as a library Go is required and Syncthing needs to be checked out as a Git submodule.
-Checkout the <a class="reference external" href="https://docs.syncthing.net/dev/building#prerequisites">documentation of Syncthing itself</a> for
+Check out the <a class="reference external" href="https://docs.syncthing.net/dev/building#prerequisites">documentation of Syncthing itself</a> for
 details.</p>
 <p>Sometimes it can be useful to use a different version of Go then what is provided by the packaging one would
 normally use. To download and install a different version of Go into <code class="docutils literal notranslate"><span class="pre">GOPATH</span></code> one can invoke the following
@@ -83,7 +83,7 @@ command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>go install golang.org/dl/go1.22.11@latest &amp;&amp; $GOPATH/src/go/bin/go1.22.11 download`
 </pre></div>
 </div>
-<p>Checkout the <a class="reference external" href="https://go.dev/doc/devel/release">release history of Go</a> for available versions.</p>
+<p>Check out the <a class="reference external" href="https://go.dev/doc/devel/release">release history of Go</a> for available versions.</p>
 <p>Then the version can be used by adding <code class="docutils literal notranslate"><span class="pre">-DGO_BIN=$GOPATH/bin/go1.22.11</span></code> to the CMake arguments. It is not
 necessary to clean an existing build directly. All relevant parts will be re-built as necessary with the
 new version.</p>
@@ -152,7 +152,7 @@ fix this.</p>
 </div>
 <ul class="simple">
 <li><p>Replace <code class="docutils literal notranslate"><span class="pre">/install/prefix</span></code> with the directory where you want to install.</p></li>
-<li><p>Checkout the “<a class="reference external" href="https://github.com/Martchus/qtforkawesome/#providing-the-font-file">Providing the font file</a>”
+<li><p>Check out the “<a class="reference external" href="https://github.com/Martchus/qtforkawesome/#providing-the-font-file">Providing the font file</a>”
 section of qtforkawesome’s README for details regarding the
 ForkAwesome-related parameters.</p></li>
 </ul>
@@ -201,7 +201,7 @@ have been installed in the right directories.</p>
 <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">kservices5</span><span class="o">/</span><span class="n">syncthingfileitemaction</span><span class="o">.</span><span class="n">desktop</span>
 </pre></div>
 </div>
-<p>These examples were for KDE 5. It looks a bit different for KDE 6. Checkout my Arch Linux and
+<p>These examples were for KDE 5. It looks a bit different for KDE 6. Check out my Arch Linux and
 openSUSE packaging for further examples.</p>
 <p>The directory where the <code class="docutils literal notranslate"><span class="pre">*.so</span></code> file needs to be installed to, seems to differ from distribution to
 distribution. The right directory for your distribution can be queried using qmake using, e.g.
@@ -215,7 +215,7 @@ possible to specify the directory manually, e.g. for Tumbleweed one would add
 than the version actually installed on the system. This can happen if repositories are misconfigured,
 e.g. when using Fedora 39 but adding the Fedora 40 repo.</p>
 <hr class="docutils" />
-<p>If the Plasmoid still won’t load, checkout the log of <code class="docutils literal notranslate"><span class="pre">plasmashell</span></code>/<code class="docutils literal notranslate"><span class="pre">plasmoidviewer</span></code>/<code class="docutils literal notranslate"><span class="pre">plasmawindowed</span></code>.
+<p>If the Plasmoid still won’t load, check out the log of <code class="docutils literal notranslate"><span class="pre">plasmashell</span></code>/<code class="docutils literal notranslate"><span class="pre">plasmoidviewer</span></code>/<code class="docutils literal notranslate"><span class="pre">plasmawindowed</span></code>.
 Also consider using strace to find out at which paths the shell is looking for <code class="docutils literal notranslate"><span class="pre">*.desktop</span></code> and
 <code class="docutils literal notranslate"><span class="pre">*.so</span></code> files.</p>
 <p>For a development setup of the KDE integration, continue reading the subsequent section.</p>
@@ -243,6 +243,9 @@ in <code class="docutils literal notranslate"><span class="pre">connector/CMakeL
 <li><p>Open the files with Qt Linguist to add translations. Qt Linguist is part of
 the <a class="reference external" href="http://code.qt.io/cgit/qt/qttools.git/">Qt Tools repository</a> and its usage
 is <a class="reference external" href="http://doc.qt.io/qt-5/linguist-translators.html">well documented</a>.</p></li>
+<li><p>If you have added translations for the mobile UI as well, it makes sense to add an entry
+for the new locale also in <code class="docutils literal notranslate"><span class="pre">tray/android/res/xml/locale_config.xml</span></code>. This is required
+for the locale to be selectable in app-specific language settings on Android.</p></li>
 </ol>
 </section>
 <section id="extend-update-existing-translations">
@@ -301,10 +304,10 @@ and <a class="reference internal" href="../plasmoid/testing.html"><span class="s
 environment</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">QT_QPA_PLATFORMTHEME</span></code>: the platform theme to use (e.g. <code class="docutils literal notranslate"><span class="pre">gtk3</span></code>) which influences file dialogs and
 other parts of the UI where Qt can make use of native APIs</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">QSG_RHI_BACKEND</span></code>: set the underlying graphics API used by the Qt Quick GUI, checkout the
+<li><p><code class="docutils literal notranslate"><span class="pre">QSG_RHI_BACKEND</span></code>: set the underlying graphics API used by the Qt Quick GUI, check out the
 <a class="reference external" href="https://doc.qt.io/qt-6/qtquick-visualcanvas-scenegraph-renderer.html#rendering-via-the-qt-rendering-hardware-interface">Qt documentation</a>
 for details</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">QT_QUICK_CONTROLS_STYLE</span></code>: the style to use in the Qt Quick GUI, checkout the
+<li><p><code class="docutils literal notranslate"><span class="pre">QT_QUICK_CONTROLS_STYLE</span></code>: the style to use in the Qt Quick GUI, check out the
 <a class="reference external" href="https://doc.qt.io/qt-6/qtquickcontrols-styles.html">Qt documentation</a> for available options</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">QT_QUICK_CONTROLS_MATERIAL_THEME</span></code>/<code class="docutils literal notranslate"><span class="pre">QT_QUICK_CONTROLS_UNIVERSAL_THEME</span></code>: the theme to use in the Qt
 Quick GUI, the variable and options depend on the style being used</p></li>

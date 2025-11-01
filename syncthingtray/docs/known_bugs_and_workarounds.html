@@ -36,7 +36,7 @@
   <section id="known-bugs-and-workarounds">
 <h1>Known bugs and workarounds<a class="headerlink" href="#known-bugs-and-workarounds" title="Link to this heading">¶</a></h1>
 <p>The following bugs are caused by dependencies or limitations of certain
-platforms. For bugs of Syncthing Tray itself, checkout the issues on GitHub.</p>
+platforms. For bugs of Syncthing Tray itself, check out the issues on GitHub.</p>
 <section id="workaround-positioning-issues-under-wayland">
 <h2>Workaround positioning issues under Wayland<a class="headerlink" href="#workaround-positioning-issues-under-wayland" title="Link to this heading">¶</a></h2>
 <p>The Qt Widgets based version basically works under Wayland but there are
@@ -101,7 +101,7 @@ the process needs to be restarted.</p>
 <p>Note that one can alternatively also enable Windows’ “High contrast” setting which
 seems to bring back the traditional theming/coloring (which has normally been
 <a class="reference external" href="https://superuser.com/questions/949920/window-color-and-appearance-removed-in-win10">removed</a>).
-Unfortunately it doesn’t look very nice overall. Checkout
+Unfortunately it doesn’t look very nice overall. Check out
 https://github.com/tomasz1986/classic2000 to see how Windows looks like with high
 contrast applied, or if you’re in need for themes that look at least nicer than
 what’s shipped with Windows.</p>
@@ -139,6 +139,11 @@ The Plasmoid is <em>not</em> affected by this limitation.</p></li>
 <li><p>The notification text is not translated under Android due to https://bugreports.qt.io/browse/QTBUG-140482.</p></li>
 <li><p>Reading the initial status of the network connection requires manual workarounds on Android, see
 https://bugreports.qt.io/browse/QTBUG-139604.</p></li>
+</ul>
+</li>
+<li><p>Qt &gt; 6.9.3, 6.10.0:</p>
+<ul>
+<li><p>Text fields don’t show the keyboard on first tap under Android 16, see https://bugreports.qt.io/browse/QTBUG-140897.</p></li>
 </ul>
 </li>
 <li><p>Qt &lt; 6.11:</p>
@@ -192,7 +197,7 @@ https://codereview.qt-project.org/#/c/187069/. However, the fix is only availabl
 <li><p>KDE limitations</p>
 <ul>
 <li><p>Issues with the configuration have appeared as of some version of Plasma, see https://github.com/Martchus/syncthingtray/issues/239
-and https://bugs.kde.org/show_bug.cgi?id=485072. It is unclear whether the problem is in Syncthing Tray or Plasma. Checkout the
+and https://bugs.kde.org/show_bug.cgi?id=485072. It is unclear whether the problem is in Syncthing Tray or Plasma. Check out the
 “<a class="reference internal" href="../README.html#required-system-configuration"><span class="std std-ref">Configuring Plasmoid</span></a>” section for details.</p></li>
 <li><p>High-DPI scaling of Plasmoid is broken under X11 (https://bugs.kde.org/show_bug.cgi?id=356446).</p></li>
 <li><p>Plasma &lt; 5.26.0:</p>
@@ -204,7 +209,7 @@ and https://bugs.kde.org/show_bug.cgi?id=485072. It is unclear whether the probl
 </li>
 <li><p>Systemd integration</p>
 <ul>
-<li><p>This feature relies especially on the system being correctly configured. Checkout the
+<li><p>This feature relies especially on the system being correctly configured. Check out the
 “<a class="reference internal" href="../README.html#required-system-configuration"><span class="std std-ref">Required system configuration</span></a>” section for details.</p></li>
 </ul>
 </li>

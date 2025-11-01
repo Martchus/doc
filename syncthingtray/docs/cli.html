@@ -37,17 +37,17 @@
 <h1>Using the command-line interface<a class="headerlink" href="#using-the-command-line-interface" title="Link to this heading">¶</a></h1>
 <p>Syncthing Tray provides two command-line interfaces:</p>
 <ul class="simple">
-<li><p>The separate executable <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> allows to interact with a running instance of Syncthing to
-trigger certain actions like rescans, editing the Syncthing config and more. It complements
+<li><p>The separate executable <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> allows you to interact with a running instance of Syncthing to
+trigger certain actions such as rescans, editing the Syncthing config, and more. It complements
 Syncthing’s own command-line interface. Invoke <code class="docutils literal notranslate"><span class="pre">syncthingctl</span> <span class="pre">--help</span></code> for details.</p></li>
 <li><p>The GUI/tray executable <code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code> also exposes a command-line interface to interact with
 a running instance of the GUI/tray. Invoke <code class="docutils literal notranslate"><span class="pre">syncthingtray</span> <span class="pre">--help</span></code> for details. Additional remarks:</p>
 <ul>
 <li><p>If Syncthing itself is built into Syncthing Tray (like the Linux and Windows builds found in
-the release-section on GitHub) then Syncthing’s own command-line interface is exposed via
-<code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code> as well.</p></li>
-<li><p>The experimental mobile UI can be launched on the desktop with the <code class="docutils literal notranslate"><span class="pre">qt-quick-gui</span></code> sub-command
-when Syncthing Tray was built with support for it.</p></li>
+the release section on GitHub), then Syncthing’s own command-line interface is also exposed via
+<code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code>.</p></li>
+<li><p>The experimental mobile UI can be launched on the desktop with the <code class="docutils literal notranslate"><span class="pre">qt-quick-gui</span></code> subcommand
+when Syncthing Tray is built with support for it.</p></li>
 </ul>
 </li>
 </ul>
@@ -56,18 +56,18 @@ In case of <code class="docutils literal notranslate"><span class="pre">syncthin
 <section id="important-remarks">
 <h2>Important remarks<a class="headerlink" href="#important-remarks" title="Link to this heading">¶</a></h2>
 <p>On Windows, you’ll have to use the <code class="docutils literal notranslate"><span class="pre">syncthingtray-cli</span></code> executable to see output in the terminal.
-(At least when using the official terminals; with e.g. mintty you can just use the normal executable.)</p>
+(At least when using the official terminals; with, e.g., mintty, you can just use the normal executable.)</p>
 <p>Depending on how you <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">downloaded/installed</a>
-Syncthing Tray you may need get <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> separately, e.g. as a separate download/package.</p>
-<p>The exact name of the executables may also differ, e.g. the Arch Linux package uses <code class="docutils literal notranslate"><span class="pre">syncthingctl-qt6</span></code>
-and <code class="docutils literal notranslate"><span class="pre">syncthingtray-qt6</span></code> for the preferable Qt 6 based version.</p>
+Syncthing Tray, you may need to get <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> separately, e.g., as a separate download/package.</p>
+<p>The exact name of the executables may also differ, e.g., the Arch Linux package uses <code class="docutils literal notranslate"><span class="pre">syncthingctl-qt6</span></code>
+and <code class="docutils literal notranslate"><span class="pre">syncthingtray-qt6</span></code> for the preferable Qt 6-based version.</p>
 </section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
 <p>The following sections give examples of some useful commands. For an exhaustive list of commands, use
-<code class="docutils literal notranslate"><span class="pre">--help</span></code> as mentioned before.</p>
-<p><code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code> only supports the <code class="docutils literal notranslate"><span class="pre">cli</span></code> sub-command for accessing Syncthing’s own CLI when Syncthing is
-built-in. Otherwise you can use <code class="docutils literal notranslate"><span class="pre">syncthing</span></code> instead of <code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code> in these examples.</p>
+<code class="docutils literal notranslate"><span class="pre">--help</span></code>, as mentioned before.</p>
+<p><code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code> only supports the <code class="docutils literal notranslate"><span class="pre">cli</span></code> subcommand for accessing Syncthing’s own CLI when Syncthing is
+built-in. Otherwise, you can use <code class="docutils literal notranslate"><span class="pre">syncthing</span></code> instead of <code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code> in these examples.</p>
 <p>These examples assume that Bash is used. Other shells might require different quoting/escaping.</p>
 <section id="displaying-status">
 <h3>Displaying status<a class="headerlink" href="#displaying-status" title="Link to this heading">¶</a></h3>
@@ -76,7 +76,7 @@ built-in. Otherwise you can use <code class="docutils literal notranslate"><span
 </pre></div>
 </div>
 <p>It prints an accumulation of the information returned by several routes of the
-<a class="reference external" href="https://docs.syncthing.net/dev/rest.html">REST-API</a> and is comparable with the information displayed
+<a class="reference external" href="https://docs.syncthing.net/dev/rest.html">REST API</a> and is comparable to the information displayed
 on the official web-based UI.</p>
 <p>It is also possible to filter the output:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">syncthingctl</span> <span class="n">status</span> <span class="o">--</span><span class="nb">dir</span> <span class="n">dir1</span> <span class="o">--</span><span class="nb">dir</span> <span class="n">dir2</span> <span class="o">--</span><span class="n">dev</span> <span class="n">dev1</span> <span class="o">--</span><span class="n">dev</span> <span class="n">dev2</span>
@@ -85,22 +85,22 @@ on the official web-based UI.</p>
 </section>
 <section id="triggering-actions">
 <h3>Triggering actions<a class="headerlink" href="#triggering-actions" title="Link to this heading">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> commands <code class="docutils literal notranslate"><span class="pre">pause</span></code>, <code class="docutils literal notranslate"><span class="pre">resume</span></code> and <code class="docutils literal notranslate"><span class="pre">rescan</span></code> are also very useful as they allow quickly
-pausing/resuming and rescanning the specified folders/devices from the command-line. The helptext
+<p>The <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> commands <code class="docutils literal notranslate"><span class="pre">pause</span></code>, <code class="docutils literal notranslate"><span class="pre">resume</span></code>, and <code class="docutils literal notranslate"><span class="pre">rescan</span></code> are also very useful, as they allow you to quickly
+pause/resuming and rescanning the specified folders/devices from the command line. The help text
 of <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> already contains some examples.</p>
 </section>
 <section id="querying-and-changing-the-configuration">
 <h3>Querying and changing the configuration<a class="headerlink" href="#querying-and-changing-the-configuration" title="Link to this heading">¶</a></h3>
-<p>You can also query and change the Syncthing configuration. Depending on the use case either
+<p>You can also query and change the Syncthing configuration. Depending on the use case, either
 <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> or Syncthing’s own CLI client is better suited.</p>
 <hr class="docutils" />
 <p>This <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> command outputs the data
-returned by the <a class="reference external" href="https://docs.syncthing.net/rest/config.html#rest-config">configuration REST-API</a>
+returned by the <a class="reference external" href="https://docs.syncthing.net/rest/config.html#rest-config">configuration REST API</a>
 as raw JSON:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">syncthingctl</span> <span class="n">cat</span>
 </pre></div>
 </div>
-<p>You can use e.g. <code class="docutils literal notranslate"><span class="pre">jq</span></code> to get e.g. a specific field of a specific folder:</p>
+<p>You can use, e.g., <code class="docutils literal notranslate"><span class="pre">jq</span></code> to get a specific field of a specific folder:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">syncthingctl</span> <span class="n">cat</span> <span class="o">|</span> <span class="n">jq</span> <span class="o">-</span><span class="n">r</span> <span class="s1">&#39;.folders[] | select(.id == &quot;docs-books-recent&quot;) | .path&#39;</span>
 </pre></div>
 </div>
@@ -110,9 +110,9 @@ as raw JSON:</p>
 </pre></div>
 </div>
 <hr class="docutils" />
-<p>The command <code class="docutils literal notranslate"><span class="pre">syncthingctl</span> <span class="pre">edit</span></code> allows editing the JSON config in a text editor on the
+<p>The command <code class="docutils literal notranslate"><span class="pre">syncthingctl</span> <span class="pre">edit</span></code> allows you to edit the JSON config in a text editor on the
 terminal (using the editor from your <code class="docutils literal notranslate"><span class="pre">EDITOR</span></code> environment variable). This corresponds to
-changing the “Advanced Configuration” on the official web-based UI so, <strong>be careful!</strong>
+changing the “Advanced Configuration” on the official web-based UI, so <strong>be careful!</strong>
 Incorrect configuration may damage your folder contents and render Syncthing inoperable.</p>
 <p>It is also possible to change the config programmatically via JavaScript, e.g. this
 example toggles whether a specific folder is paused:</p>
@@ -127,8 +127,7 @@ to pause several folders at once:</p>
     <span class="s1">&#39;config.folders.filter(f =&gt; f.id.startsWith(&quot;docs-&quot;)).forEach(f =&gt; f.paused = !f.paused)&#39;</span>
 </pre></div>
 </div>
-<p>You probably want to test such a commands before executing them for real with <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code>
-first.</p>
+<p>You probably want to test such commands with <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> first before executing them for real.</p>
 <p>Syncthing’s own CLI allows something similar without involving JavaScript:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">syncthingtray</span> <span class="n">cli</span> <span class="n">config</span> <span class="n">folders</span> <span class="n">docs</span><span class="o">-</span><span class="n">misc</span> <span class="n">paused</span> <span class="nb">set</span> <span class="n">true</span>
 </pre></div>

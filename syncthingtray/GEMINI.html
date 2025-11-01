@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Git workflow &#8212; Syncthing Tray 2025-09-26 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=567faf66"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>These instructions are for Gemini. At this point use of Gemini
+is experimental and focusing on basic tasks such as reviewing
+documentation and adding translations.</p>
+<section id="git-workflow">
+<h1>Git workflow<a class="headerlink" href="#git-workflow" title="Link to this heading">¶</a></h1>
+<p>Stay on the current Git branch. Do NOT change the branch.</p>
+<p>Create only local commits on that branch. Do NOT push commits
+to a remote.</p>
+<p>Do not delete/amend any existing commits.</p>
+<p>Start commit messages with a verb in imperative, e.g. “Fix …”.</p>
+</section>
+<section id="project-structure">
+<h1>Project structure<a class="headerlink" href="#project-structure" title="Link to this heading">¶</a></h1>
+<p>There is a top-level CMake project which includes nested CMake
+projects from sub directories. The CMake projects in sub
+directories list all relevant files for their sub directory.</p>
+<p>This list can be used to find source code files but also
+additional files like translations. When adding/removing files,
+the CMake project files need to be updated.</p>
+</section>
+<section id="building">
+<h1>Building<a class="headerlink" href="#building" title="Link to this heading">¶</a></h1>
+<p>Do NOT invoke CMake. Do NOT try to build/compile anything. The
+tasks I will give you for now will NOT require you to build
+anything for now.</p>
+</section>
+<section id="localization">
+<h1>Localization<a class="headerlink" href="#localization" title="Link to this heading">¶</a></h1>
+<p>Translations are done using the internationalization features
+provided by the Qt framework.</p>
+<p>The source tree contains “translations” sub folders with “ts”
+files in them. There is one “ts” file for each locale. To
+add/update translations, these “ts” files need to be updated.
+When updating these files, take care to retain a valid XML
+structure, e.g. use escape characters as needed. Escape also
+quotes even if this is not necessary to be consistent with
+Qt Linguist.</p>
+<p>The source code contains human readable text in English. This
+is the “source of truth”. So when changing English text you
+have to change it at the source in addition to changing it in
+“ts” files.</p>
+<p>Keep the <code class="docutils literal notranslate"><span class="pre">&lt;translations&gt;</span></code> tag empty if it doesn’t differ from
+the <code class="docutils literal notranslate"><span class="pre">&lt;source&gt;</span></code> tag. Only ensure the <code class="docutils literal notranslate"><span class="pre">type=&quot;unfinished&quot;</span></code>
+attribute is removed in this case.</p>
+<p>Ensure punctuation and whitespaces are preserved, e.g. if the
+source text ends with a whitespace (like “Some field: “),
+preserve the trailing whitespace (like “Ein Feld: “).</p>
+<p>Avoid using “Sie” in German translations. So write e.g.”Öffne …”
+and not “Öffnen Sie …”.</p>
+</section>
+<section id="misc">
+<h1>Misc<a class="headerlink" href="#misc" title="Link to this heading">¶</a></h1>
+<p>Keep wording/phrasing in-line with what is already there.
+Feel free to fix typos or grammar mistakes, though. Do this
+when updating translations but also when updating documentation,
+comments and code.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Syncthing Tray</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/cli.html">Using the command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/known_bugs_and_workarounds.html">Known bugs and workarounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/android.html">Using the Android app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/devel.html">Contributing, building, developing, debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plasmoid/testing.html">Testing and debugging Plasmoid for Plasma with Qt Creator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plasmoid/testing.html#testing-against-a-development-build-of-plasma">Testing against a development build of Plasma</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fileitemactionplugin/testing.html">Testing and debugging Dolphin/KIO plugin with Qt Creator</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;Martchus.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/GEMINI.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
