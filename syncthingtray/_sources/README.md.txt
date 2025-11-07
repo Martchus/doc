@@ -203,7 +203,7 @@ itself are also located within this directory when Syncthing is launched via the
 
 ### Connect to Syncthing via Unix domain socket
 When using a Unix domain socket as the Syncthing GUI address (e.g., by starting Syncthing with
-parameters such as `--gui-address=unix://%t/syncthing.socket --skip-port-probing`), you need to
+parameters such as `--gui-address=unix://%t/syncthing.socket --no-port-probing`), you need to
 specify the path to the socket as "Local path" in the advanced connection settings. This
 setting requires Qt 6.8 or higher. You still need to provide the "Syncthing URL" using the
 `unix+http` as scheme (e.g. `unix+http://127.0.0.1:8080` where the host and port are not
@@ -265,12 +265,8 @@ The Plasmoid can be added/shown in two different ways:
     * Whether the Plasmoid is shown as part of the system tray Plasmoid can be configured
       in the settings of the system tray Plasmoid. You can access the settings of the
       system tray Plasmoid from its context-menu which can be opened by right-clicking on
-    * This is likely the preferred way of showing it and may also be the default.
       the arrow for expanding/collapsing.
-    * The list of entries in the system tray Plasmoid settings might show an
-      invalid/disabled entry for Syncthing in some cases. There should always nevertheless
-      also be a valid entry which can be used. See the
-      [related issue](https://github.com/Martchus/syncthingtray/issues/239) for details.
+    * This is likely the preferred way of showing it and may also be the default.
     * This way, it is also possible to show the icon only in certain states by choosing to
       show it only when important and selecting the states in the Plasmoid's settings.
     * Configuring the size has no effect when the Plasmoid is displayed as part of the
@@ -444,6 +440,9 @@ See the [release section on GitHub](https://github.com/Martchus/syncthingtray/re
               the packages `libglx0`, `libopengl0` and `libegl1` are installed on Debian/Ubuntu)
         * Supports X11 and Wayland (set the environment variable `QT_QPA_PLATFORM=xcb` to disable
           native Wayland support if it does not work on your system)
+        * This build of Syncthing Tray bundles OpenSSL because different GNU/Linux distributions come with different incompatible
+          versions of that library. It will use your OpenSSL configuration, though. In case that config is not compatible with the
+          bundled version of OpenSSL, preventing TLS support from working, you need to set the environment variable `OPENSSL_CONF=`.
         * The built-in web view is not available in these builts as it would require shipping a full web browser engine.
           Syncthing Tray can still show the official web-based UI in a dedicated window via a Chromium-based browser you have
           already installed using its "app mode". Alternatively, use the distribution-specific builds provided for Arch Linux,
