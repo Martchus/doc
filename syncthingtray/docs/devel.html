@@ -65,9 +65,10 @@ add <code class="docutils literal notranslate"><span class="pre">-DNO_FILE_ITEM_
 <p>To build the Plasmoid for the Plasma desktop, the Qt module QML and the KDE Frameworks module Plasma are
 required as well. Additionally, the Plasmoid requires the latest Qt version (5.15) for certain Qt Quick features.
 To skip building the Plasmoid, add <code class="docutils literal notranslate"><span class="pre">-DNO_PLASMOID:BOOL=ON</span></code> to the CMake arguments.</p>
-<p>To specify the major Qt version to use, set <code class="docutils literal notranslate"><span class="pre">QT_PACKAGE_PREFIX</span></code> (e.g. add <code class="docutils literal notranslate"><span class="pre">-DQT_PACKAGE_PREFIX:STRING=Qt6</span></code>
-to the CMake arguments). There’s also <code class="docutils literal notranslate"><span class="pre">KF_PACKAGE_PREFIX</span></code> for KDE dependencies. Note that KDE integrations
-always require the same major Qt version as your KDE installation uses.</p>
+<p>To specify the major Qt version to use, set <code class="docutils literal notranslate"><span class="pre">QT_PACKAGE_PREFIX</span></code>. There’s also <code class="docutils literal notranslate"><span class="pre">KF_PACKAGE_PREFIX</span></code> for KDE
+dependencies. Note that KDE integrations always require the same major Qt version as your KDE installation uses.
+Since the default Qt version is still Qt 5, you likely want to add e.g.
+<code class="docutils literal notranslate"><span class="pre">-DQT_PACKAGE_PREFIX:STRING=Qt6</span> <span class="pre">-DKF_PACKAGE_PREFIX:STRING=KF6</span></code> to the CMake arguments at this point.</p>
 <hr class="docutils" />
 <p>The following Boost libraries are required: <code class="docutils literal notranslate"><span class="pre">Boost.Asio</span></code>, <code class="docutils literal notranslate"><span class="pre">Boost.Process</span></code>, <code class="docutils literal notranslate"><span class="pre">Boost.Filesystem</span></code></p>
 <p>The launcher uses these libraries by default to handle sub processes correctly (and avoid leftover processes).
@@ -140,13 +141,17 @@ recent Git version and a filesystem which supports symlinks (NTFS works). Additi
 If you run into “not found” errors on symlink creation use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">reset</span> <span class="pre">--hard</span></code> within the repository to
 fix this.</p>
 </li>
-<li><p>Configure the build</p>
+<li><p>Configure the build, e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="s2">&quot;$BUILD_DIR&quot;</span>
 <span class="n">cmake</span> \
+ <span class="o">-</span><span class="n">G</span> <span class="n">Ninja</span> \
  <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Release</span> \
  <span class="o">-</span><span class="n">DCMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="s2">&quot;/install/prefix&quot;</span> \
  <span class="o">-</span><span class="n">DFORK_AWESOME_FONT_FILE</span><span class="o">=</span><span class="s2">&quot;$SOURCES/forkawesome/fonts/forkawesome-webfont.woff2&quot;</span> \
  <span class="o">-</span><span class="n">DFORK_AWESOME_ICON_DEFINITIONS</span><span class="o">=</span><span class="s2">&quot;$SOURCES/forkawesome/src/icons/icons.yml&quot;</span> \
+ <span class="o">-</span><span class="n">DQT_PACKAGE_PREFIX</span><span class="p">:</span><span class="n">STRING</span><span class="o">=</span><span class="n">Qt6</span> \
+ <span class="o">-</span><span class="n">DKF_PACKAGE_PREFIX</span><span class="p">:</span><span class="n">STRING</span><span class="o">=</span><span class="n">KF6</span> \
+ <span class="o">-</span><span class="n">DBUILTIN_TRANSLATIONS</span><span class="p">:</span><span class="n">BOOL</span><span class="o">=</span><span class="n">ON</span> \
  <span class="s2">&quot;$SOURCES/subdirs/syncthingtray&quot;</span>
 </pre></div>
 </div>
