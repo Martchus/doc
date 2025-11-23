@@ -62,6 +62,19 @@ Syncthing Tray, you may need to get <code class="docutils literal notranslate"><
 <p>The exact name of the executables may also differ, e.g., the Arch Linux package uses <code class="docutils literal notranslate"><span class="pre">syncthingctl-qt6</span></code>
 and <code class="docutils literal notranslate"><span class="pre">syncthingtray-qt6</span></code> for the preferable Qt 6-based version.</p>
 </section>
+<section id="tls-and-the-certificate">
+<h2>TLS and the certificate<a class="headerlink" href="#tls-and-the-certificate" title="Link to this heading">¶</a></h2>
+<p>Just like your web browser might ask you to accept a self-signed certificate when using TLS, <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code>
+will require you to specify the expected certificate via the <code class="docutils literal notranslate"><span class="pre">--cert</span></code> option.</p>
+<p>Otherwise you will run into the error <code class="docutils literal notranslate"><span class="pre">TLS</span> <span class="pre">error:</span> <span class="pre">The</span> <span class="pre">certificate</span> <span class="pre">is</span> <span class="pre">self-signed,</span> <span class="pre">and</span> <span class="pre">untrusted</span> <span class="pre">(9)</span></code>.</p>
+<p>When connecting with a local Syncthing instance, <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> will automatically accept the certificate
+that is present in the Syncthing config directory, though. This is only possible when connecting via the
+IP address of a local network device (e.g. <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>).</p>
+<p>Loading the TLS certificate can be debugged by setting the environment variable
+<code class="docutils literal notranslate"><span class="pre">LIB_SYNCTHING_CONNECTOR_LOG_CERT_LOADING=1</span></code>.</p>
+<p>When using generic GNU/Linux executable from the GitHub release section or the website, be sure to also
+read the remark about OpenSSL if TLS doesn’t work.</p>
+</section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
 <p>The following sections give examples of some useful commands. For an exhaustive list of commands, use
@@ -167,6 +180,7 @@ to pause several folders at once:</p>
 <li class="toctree-l1"><a class="reference internal" href="screenshots.html">Screenshots</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using the command-line interface</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#important-remarks">Important remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tls-and-the-certificate">TLS and the certificate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
