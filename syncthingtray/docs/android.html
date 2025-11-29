@@ -45,50 +45,72 @@ of the <code class="docutils literal notranslate"><span class="pre">c++utilities
 <p>The Android app requires Android 9 or later, though it is mainly tested on Android 14, 15 and 16.</p>
 <p>Depending on the Android version and vendor-specific limitations, you might run into permission
 errors and <a class="reference external" href="https://dontkillmyapp.com">the app being stopped by the OS</a>.</p>
-<p>For me, it works well enough on a three-year-old average Samsung device, except that the foreground
-service of the app is frequently killed (just to be restarted almost immediately). I also
-successfully tested it on an older Nokia device with Android 10. So, it probably works on most
-phones that came out around 2018 or more recently. I haven’t tested the app on very low-end
-devices yet.</p>
+<p>For me, it works well enough on a three-year-old average Samsung device. I also successfully
+tested it on an older Nokia device with Android 10. So, it probably works on most phones that
+came out around 2018 or more recently. I haven’t tested the app on very low-end devices yet.</p>
 </section>
-<section id="general-remarks">
-<h2>General remarks<a class="headerlink" href="#general-remarks" title="Link to this heading">¶</a></h2>
-<p>If you’re starting from scratch, you can simply install and start the app. Otherwise, check out
-the sections about migrating after reading the general remarks.</p>
-<p>In any case, you need to give the app <em>notification permission</em> and <em>storage permission</em> via the
-Android app settings. The start page of the app shows “Request … permission” actions at the
-top for opening the app settings if the permissions haven’t been granted yet.</p>
-<p>The app will start Syncthing automatically by default. Once Syncthing is running, you can add
-devices and folders as usual. The official Syncthing documentation applies. There are also many
-help texts provided within the app itself. A few additional remarks:</p>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<p>The first things to do after installing and starting the app:</p>
 <ul class="simple">
+<li><p>You need to give the app <em>notification permission</em> and <em>storage permission</em> via the Android app
+settings. The start page of the app shows “Request … permission” actions at the top for opening
+the app settings if the permissions haven’t been granted yet.</p></li>
+<li><p>The app will start Syncthing automatically by default. You can also disable this and configure
+it to connect with an externally launched instance of Syncthing.</p></li>
+<li><p>It is a good idea to enable authentication for accessing the web-based UI, as otherwise, any
+other app would be able to access it. A username and password can be configured under
+“Advanced → Syncthing API and web-based GUI”. Alternatively, you can enable the use of a UNIX
+domain socket under “Tweaks”. This also prevents other apps from accessing the web-based UI by
+making it completely inaccessible and, by the way, avoiding communication overhead.</p></li>
+<li><p>If you already have another Syncthing app installed or you have an existing configuration from
+another device, read the next sections for testing/migrating.</p></li>
+<li><p>You can add devices and folders as usual. The official Syncthing documentation applies. There
+are also many help texts provided within the app itself. A few additional remarks:</p>
+<ul>
 <li><p>You can select device IDs of nearby devices from the combo box when adding a new device. So,
 there’s usually no need to copy &amp; paste device IDs. If you nevertheless need to scan a QR code,
 I recommend simply using your camera app to scan and copy the QR code information and paste
 it into the Syncthing Tray app. So far, there is no in-app QR code scanning.</p></li>
 <li><p>You can leave the device name empty to use the name the device advertises. The device name can
 also be changed later (in contrast to the IDs).</p></li>
-<li><p>If you already have another Syncthing app installed or you have an existing configuration from
-another device, read the next sections for testing/migrating.</p></li>
-<li><p>The app does not automatically trigger media library rescans, so, e.g., synchronized music might
-not show up immediately in your music app. However, you can trigger a rescan manually if needed.
-You can do this per folder from the context menu on the folders page.</p></li>
 <li><p>It is highly recommended to enable the option “Ignore permissions” on all folders under Android
 and when certain file systems are used. The app, therefore, enables this option by default in
 such cases when a path for a new folder has been selected. You can still disable the option
 manually.</p></li>
-<li><p>It is probably also a good idea to enable authentication for accessing the web-based UI, as
-otherwise, any other app would be able to access it. A username and password can be configured
-under “Advanced” → “Syncthing API and web-based GUI”. Alternatively, you can enable the use of
-a UNIX domain socket under “Tweaks”. This also prevents other apps from accessing the
-web-based UI by making it completely inaccessible and, by the way, avoiding communication
-overhead.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="important-remarks">
+<h2>Important remarks<a class="headerlink" href="#important-remarks" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The app does not automatically trigger media library rescans, so, e.g., synchronized music might
+not show up immediately in your music app. However, you can trigger a rescan manually if needed.
+You can do this per folder from the context menu on the folders page.</p></li>
 <li><p>The app exposes its private directories via a “document provider” so you can grant other apps
 permission to access them, e.g., to browse the Syncthing home directory containing the
 Syncthing configuration and database in a file browser that supports “document providers”.
 Check out the “<a class="reference internal" href="#using-the-document-provider-on-android"><span class="xref myst">Using the document provider on Android</span></a>”
-for details.</p></li>
+for details. Subdirectories within the private directories can also be added as Syncthing
+folders.</p></li>
 </ul>
+</section>
+<section id="synchronizing-only-some-files">
+<h2>Synchronizing only some files<a class="headerlink" href="#synchronizing-only-some-files" title="Link to this heading">¶</a></h2>
+<p>If you don’t want to synchronize a folder completely it makes sense to configure ignore patterns.
+To make things a little bit easier, the app features a “Remote files” browser that allows one to
+manage ignore patterns. To use this, one would:</p>
+<ol class="arabic simple" start="0">
+<li><p>Read the <a class="reference external" href="https://docs.syncthing.net/users/ignoring.html">documentation on ignore patterns</a>.</p></li>
+<li><p>Add a new folder keeping the setting “Paused” enabled to prevent Syncthing from immediately
+pulling files.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">/**</span></code> as ignore pattern to ignore everything by default.</p></li>
+<li><p>Resume the folder and wait until it is idle.</p></li>
+<li><p>Open the “Remote files” browser for the folder and select directories and files to synchronize.</p></li>
+<li><p>Review the changes to the ignore pattern and apply them if everything looks right. In this
+last step you can also do manual changes, e.g. replacing certain path elements with globbing.</p></li>
+</ol>
 </section>
 <section id="testing-the-app-without-migrating">
 <h2>Testing the app without migrating<a class="headerlink" href="#testing-the-app-without-migrating" title="Link to this heading">¶</a></h2>
@@ -124,10 +146,15 @@ everything is in-sync.</p></li>
 or external storage.</p></li>
 <li><p>Stop the Syncthing app you are currently using.</p></li>
 <li><p>Start the Syncthing app from Syncthing Tray and enable running Syncthing in the app settings.</p></li>
-<li><p>Import the config and data from step 1 in the app settings. When clicking on “Import …”, you
-will be prompted to select the directory you stored the export made in step 1. After selecting
-the directory, no changes will be made immediately; the app will show you what it found and
-allow you to select what parts you want to import.</p>
+<li><p>If the export done in step 1 created an archive, you need to enable “Import/export archive”
+under “App settings → Tweaks”. If the archive is encrypted, you’ll also need to enter the
+password there. Only Zip archives are supported. If a different archiving format is used,
+you’ll have to extract the archive first and make sure that Import/export archive” is <em>not</em>
+enabled.</p></li>
+<li><p>Import the config and data from step 1 in via “App settings → Import …”. You will be prompted
+to select the directory or archive that was created by the export in step 1. After the selection,
+no changes will be made immediately; the app will show you what it found and allow you to select
+what parts you want to import.</p>
 <ul class="simple">
 <li><p>It is recommended to select only specific folders and devices. Then, the Syncthing Tray app
 will keep its current device ID. This means it will appear as a new device on other devices.
@@ -146,7 +173,7 @@ other devices once you unpause the folders/devices.</p></li>
 <li><p>It is also possible to do a full import. This will import the Syncthing configuration and
 database from the export. That means the device ID from your existing app setup will be
 reused. In fact, the entire Syncthing configuration and database will be reused. So, the
-setup will be identical to how it was before—except that now a different app is used.
+setup will be identical to how it was before — except that now a different app is used.
 That also means that no changes are required on other devices. <em>The big caveat of this method
 is that you should not start the other app anymore unless you re-import the config/database
 there and ensure the app from Syncthing Tray is stopped. Reusing the Syncthing database
@@ -156,11 +183,16 @@ device.</em></p></li>
 </li>
 </ol>
 </section>
-<section id="differences-between-syncthing-tray-on-android-and-the-syncthing-fork-app">
-<h2>Differences between Syncthing Tray on Android and the Syncthing-Fork app<a class="headerlink" href="#differences-between-syncthing-tray-on-android-and-the-syncthing-fork-app" title="Link to this heading">¶</a></h2>
+<section id="differences-between-syncthing-tray-on-android-and-the-syncthing-fork-app-by-catfriend1">
+<h2>Differences between Syncthing Tray on Android and the Syncthing-Fork app by Catfriend1<a class="headerlink" href="#differences-between-syncthing-tray-on-android-and-the-syncthing-fork-app-by-catfriend1" title="Link to this heading">¶</a></h2>
+<p>The following section describes differences between Syncthing Tray and the
+<a class="reference external" href="https://github.com/Catfriend1/syncthing-android">Syncthing-Fork app</a> which used to be
+maintained by Catfriend1. <strong>That this app is now maintained by someone else which is
+<a class="reference external" href="https://forum.syncthing.net/t/does-anyone-know-why-syncthing-fork-is-no-longer-available-on-github">discussed on the Syncthing forums</a>.</strong>
+This section is <em>not</em> taking changes after the maintainer switch into account.</p>
 <ul class="simple">
-<li><p>The <a class="reference external" href="https://github.com/Catfriend1/syncthing-android">Syncthing-Fork</a> app is generally more
-mature/stable. Syncthing Tray still has many caveats on Android (see next section).</p></li>
+<li><p>The Syncthing-Fork app is generally more mature/stable than Syncthing Tray which still has
+many caveats on Android (see next section).</p></li>
 <li><p>The Syncthing-Fork app uses Android’s native UI framework and therefore has a more native UI
 than Syncthing Tray, which uses Qt. The UI of Syncthing Tray still follows the Material style
 guidelines and provides native file dialogs and notifications.</p></li>
@@ -196,8 +228,21 @@ Check out the section
 </li>
 <li><p>Media rescans need to be triggered manually, but this can be easily done per folder from the UI.</p></li>
 <li><p>There are probably still many small UI bugs in the Qt Quick based UI used on Android.</p></li>
-<li><p>Not all features the official web UI offers have been implemented in the Qt Quick based UI yet.
-You can easily open the official web UI in a web browser, however.</p></li>
+<li><p>Not all features the official web UI offers have been implemented in the Qt Quick based UI yet.</p>
+<ul>
+<li><p>Most notably, there is no UI for restoring old versions. (You can configure versioning, though.)</p></li>
+<li><p>As a workaround, you can open the official web UI in a web browser.</p></li>
+</ul>
+</li>
+<li><p>When switching back from another app, the state of the UI might be lost. This is especially annoying
+when adding a new folder or device. This can also happen when opening the Syncthing documentation
+from within the app. So if you are on a device with low memory (which makes this more likely to
+happen), you should avoid switching to another app or opening the Syncthing documentation.</p></li>
+<li><p>Some Qt bugs mentioned under “<a class="reference internal" href="#docs/known_bugs_and_workarounds.md#list-of-bugs"><span class="xref myst">List of bugs</span></a>” affect
+the Android app.</p></li>
+<li><p>The connection to Syncthing can sometimes not be restored after restarting Syncthing (e.g. to make
+an export/backup). This happens particularly often when using a UNIX domain socket. One can restart
+the app to work around it.</p></li>
 <li><p>Some of the problems/solutions found on the
 <a class="reference external" href="https://github.com/Catfriend1/syncthing-android/wiki">Wiki pages of Syncthing-Fork</a> might help with
 Syncthing Tray on Android as well.</p></li>
@@ -280,10 +325,12 @@ at all.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="known_bugs_and_workarounds.html">Known bugs and workarounds</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using the Android app</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#compatibility">Compatibility</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#general-remarks">General remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#important-remarks">Important remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#synchronizing-only-some-files">Synchronizing only some files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing-the-app-without-migrating">Testing the app without migrating</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#migrating-data-from-your-existing-app-setup">Migrating data from your existing app setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#differences-between-syncthing-tray-on-android-and-the-syncthing-fork-app">Differences between Syncthing Tray on Android and the Syncthing-Fork app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#differences-between-syncthing-tray-on-android-and-the-syncthing-fork-app-by-catfriend1">Differences between Syncthing Tray on Android and the Syncthing-Fork app by Catfriend1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#caveats-on-android">Caveats on Android</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-the-document-provider-on-android">Using the document provider on Android</a></li>
 </ul>
