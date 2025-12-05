@@ -6,21 +6,24 @@ screenshots.
 
 The following integrations are provided:
 
-* Tray application (using the Qt framework)
-* Context menu extension for the [Dolphin](https://www.kde.org/applications/system/dolphin) file manager
-* Plasmoid for [KDE Plasma](https://www.kde.org/plasma-desktop)
+* Tray application
+* [Context menu extension](#configuring-dolphin-integration) for the
+  [Dolphin](https://www.kde.org/applications/system/dolphin) file manager
+* [Plasmoid](#configuring-plasmoid) for [KDE Plasma](https://www.kde.org/plasma-desktop)
 * [Command-line interface](docs/cli.md)
+* [Android app](docs/android.md) (still experimental)
 * Qt-ish C++ library
 
 ---
 
+This document is the main documentation of Syncthing Tray. It is available
+[on the Syncthing Tray website](https://martchus.github.io/doc/syncthingtray)
+and [on GitHub](https://github.com/Martchus/syncthingtray/blob/master/README.md). If you are not already familiar
+with Syncthing itself, you should also have a look at the [Syncthing documentation](https://docs.syncthing.net) as
+this document only covers Syncthing Tray.
+
 Check out the [official forum thread](https://forum.syncthing.net/t/yet-another-syncthing-tray) for discussions
 and announcements of new features.
-
-This README document currently serves as the main documentation, so read on for details about
-the configuration. If you are not already familiar with Syncthing itself, you should also have a look at
-the [Syncthing documentation](https://docs.syncthing.net) as this README only covers the
-Syncthing Tray integration.
 
 Issues can be created on GitHub but please check the
 [documentation on known bugs and workarounds](docs/known_bugs_and_workarounds.md) before.
@@ -29,12 +32,12 @@ Syncthing Tray works with Syncthing v1 and v2 (and probably v0). Syncthing Tray 
 be made to support future Syncthing versions as needed.
 
 ## Supported platforms
-Official binaries are provided for Windows (for i686, x86_64 and aarch64) and GNU/Linux (for x86_64) and can be
-downloaded from the [website](https://martchus.github.io/syncthingtray/#downloads-section) and the
-[release section on GitHub](https://github.com/Martchus/syncthingtray/releases). However, this is only a fraction of
-the available downloads. I also provide further repositories for some GNU/Linux distributions. There are
-also binaries/repositories provided by other distributors. For a list of links, check out the
-"[Download](#download)" section of this document.
+Official binaries are provided for Windows (for i686, x86_64 and aarch64), GNU/Linux (for x86_64) and Android
+(for x86_64 and aarch64). They can be downloaded from the [website](https://martchus.github.io/syncthingtray/#downloads-section)
+and the [release section on GitHub](https://github.com/Martchus/syncthingtray/releases). However, this is only a
+fraction of the available downloads. I also provide further repositories for some GNU/Linux distributions. There
+are also binaries/repositories provided by other distributors. For a list of links, check out the "[Download](#download)"
+section of this document.
 
 Syncthing Tray is known to work under:
 
@@ -151,7 +154,7 @@ directory for Syncthing so any Syncthing instance launched via the mobile UI wil
 
 ## Installation and deinstallation
 Check out [the website](https://martchus.github.io/syncthingtray/#downloads-section) for obtaining the executable
-or package. This README also lists more options and instructions for building from sources.
+or package. This documentation also lists more options and instructions for building from sources.
 
 If you are using a package manager, you should follow its usual workflow.
 

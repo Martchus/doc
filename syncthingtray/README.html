@@ -41,31 +41,34 @@
 screenshots.</p>
 <p>The following integrations are provided:</p>
 <ul class="simple">
-<li><p>Tray application (using the Qt framework)</p></li>
-<li><p>Context menu extension for the <a class="reference external" href="https://www.kde.org/applications/system/dolphin">Dolphin</a> file manager</p></li>
-<li><p>Plasmoid for <a class="reference external" href="https://www.kde.org/plasma-desktop">KDE Plasma</a></p></li>
+<li><p>Tray application</p></li>
+<li><p><a class="reference internal" href="#configuring-dolphin-integration"><span class="xref myst">Context menu extension</span></a> for the
+<a class="reference external" href="https://www.kde.org/applications/system/dolphin">Dolphin</a> file manager</p></li>
+<li><p><a class="reference internal" href="#configuring-plasmoid"><span class="xref myst">Plasmoid</span></a> for <a class="reference external" href="https://www.kde.org/plasma-desktop">KDE Plasma</a></p></li>
 <li><p><a class="reference internal" href="docs/cli.html"><span class="std std-doc">Command-line interface</span></a></p></li>
+<li><p><a class="reference internal" href="docs/android.html"><span class="std std-doc">Android app</span></a> (still experimental)</p></li>
 <li><p>Qt-ish C++ library</p></li>
 </ul>
 <hr class="docutils" />
+<p>This document is the main documentation of Syncthing Tray. It is available
+<a class="reference external" href="https://martchus.github.io/doc/syncthingtray">on the Syncthing Tray website</a>
+and <a class="reference external" href="https://github.com/Martchus/syncthingtray/blob/master/README.md">on GitHub</a>. If you are not already familiar
+with Syncthing itself, you should also have a look at the <a class="reference external" href="https://docs.syncthing.net">Syncthing documentation</a> as
+this document only covers Syncthing Tray.</p>
 <p>Check out the <a class="reference external" href="https://forum.syncthing.net/t/yet-another-syncthing-tray">official forum thread</a> for discussions
 and announcements of new features.</p>
-<p>This README document currently serves as the main documentation, so read on for details about
-the configuration. If you are not already familiar with Syncthing itself, you should also have a look at
-the <a class="reference external" href="https://docs.syncthing.net">Syncthing documentation</a> as this README only covers the
-Syncthing Tray integration.</p>
 <p>Issues can be created on GitHub but please check the
 <a class="reference internal" href="docs/known_bugs_and_workarounds.html"><span class="std std-doc">documentation on known bugs and workarounds</span></a> before.</p>
 <p>Syncthing Tray works with Syncthing v1 and v2 (and probably v0). Syncthing Tray is maintained, and updates will
 be made to support future Syncthing versions as needed.</p>
 <section id="supported-platforms">
 <h2>Supported platforms<a class="headerlink" href="#supported-platforms" title="Link to this heading">¶</a></h2>
-<p>Official binaries are provided for Windows (for i686, x86_64 and aarch64) and GNU/Linux (for x86_64) and can be
-downloaded from the <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">website</a> and the
-<a class="reference external" href="https://github.com/Martchus/syncthingtray/releases">release section on GitHub</a>. However, this is only a fraction of
-the available downloads. I also provide further repositories for some GNU/Linux distributions. There are
-also binaries/repositories provided by other distributors. For a list of links, check out the
-“<a class="reference internal" href="#download"><span class="xref myst">Download</span></a>” section of this document.</p>
+<p>Official binaries are provided for Windows (for i686, x86_64 and aarch64), GNU/Linux (for x86_64) and Android
+(for x86_64 and aarch64). They can be downloaded from the <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">website</a>
+and the <a class="reference external" href="https://github.com/Martchus/syncthingtray/releases">release section on GitHub</a>. However, this is only a
+fraction of the available downloads. I also provide further repositories for some GNU/Linux distributions. There
+are also binaries/repositories provided by other distributors. For a list of links, check out the “<a class="reference internal" href="#download"><span class="xref myst">Download</span></a>”
+section of this document.</p>
 <p>Syncthing Tray is known to work under:</p>
 <ul class="simple">
 <li><p>Windows 10 and 11</p></li>
@@ -205,7 +208,7 @@ directory for Syncthing so any Syncthing instance launched via the mobile UI wil
 <section id="installation-and-deinstallation">
 <h2>Installation and deinstallation<a class="headerlink" href="#installation-and-deinstallation" title="Link to this heading">¶</a></h2>
 <p>Check out <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">the website</a> for obtaining the executable
-or package. This README also lists more options and instructions for building from sources.</p>
+or package. This documentation also lists more options and instructions for building from sources.</p>
 <p>If you are using a package manager, you should follow its usual workflow.</p>
 <p>Otherwise, you have to extract the archive and launch the contained executable. Especially on Windows, please
 read the notes on the website before filing any issues. To uninstall, delete the executable again.</p>
@@ -688,8 +691,9 @@ and <a class="reference external" href="https://github.com/syncthing/docs">its d
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs/screenshots.html">Screenshots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/cli.html">Using the command-line interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/known_bugs_and_workarounds.html">Known bugs and workarounds</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/android.html">Using the Android app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/terminology.html">Terminology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/known_bugs_and_workarounds.html">Known bugs and workarounds</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/devel.html">Contributing, building, developing, debugging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plasmoid/testing.html">Testing and debugging Plasmoid for Plasma with Qt Creator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plasmoid/testing.html#testing-against-a-development-build-of-plasma">Testing against a development build of Plasma</a></li>
