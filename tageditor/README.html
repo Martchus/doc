@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Tag Editor &#8212; Tag Editor 2025-12-02 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=3f9a8ef1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="tag-editor">
+<h1>Tag Editor<a class="headerlink" href="#tag-editor" title="Link to this heading">¶</a></h1>
+<p>A tag editor with a Qt GUI and a command-line interface. It supports MP4 (iTunes), ID3, Vorbis, Opus, FLAC, and Matroska.</p>
+<section id="supported-formats">
+<h2>Supported formats<a class="headerlink" href="#supported-formats" title="Link to this heading">¶</a></h2>
+<p>The tag editor can read and write the following tag formats:</p>
+<ul class="simple">
+<li><p>iTunes-style MP4/M4A tags (MP4-DASH is supported)</p></li>
+<li><p>ID3v1 and ID3v2 tags</p>
+<ul>
+<li><p>Conversion between ID3v1 and different versions of ID3v2 is possible.</p></li>
+<li><p>These tags are mainly for use in MP3 files, but can be added to any kind of file.</p></li>
+</ul>
+</li>
+<li><p>Vorbis, Opus and FLAC comments in Ogg streams</p>
+<ul>
+<li><p>Cover art via “METADATA_BLOCK_PICTURE” is supported.</p></li>
+</ul>
+</li>
+<li><p>Vorbis comments and “METADATA_BLOCK_PICTURE” in raw FLAC streams</p></li>
+<li><p>Matroska/WebM tags and attachments</p></li>
+</ul>
+<p>Further remarks:</p>
+<ul class="simple">
+<li><p>Unsupported file contents (such as unsupported tag formats) are <em>generally</em> preserved as is.</p></li>
+<li><p>Note that APE tags are <em>not</em> supported. APE tags at the beginning of a file are strongly
+unrecommended and are thus discarded when applying changes. APE tags at the end of the file
+are preserved as is when applying changes.</p></li>
+</ul>
+</section>
+<section id="additional-features">
+<h2>Additional features<a class="headerlink" href="#additional-features" title="Link to this heading">¶</a></h2>
+<p>The tag editor can also display technical information such as the ID, format,
+language, bitrate, duration, size, timestamps, sampling frequency, FPS and other information of the tracks.</p>
+<p>It also allows one to inspect and validate the element structure of MP4 and Matroska files.</p>
+</section>
+<section id="backup-temporary-files">
+<h2>Backup/temporary files<a class="headerlink" href="#backup-temporary-files" title="Link to this heading">¶</a></h2>
+<p>Sometimes the tag editor has to rewrite the entire file to apply changes. This leads to the creation
+of a temporary file. With the GUI’s default settings, this is even enforced to be conservative <strong>as the temporary files
+also serve as a backup</strong> in case something goes wrong (e.g., your computer crashes while saving, or a bug within the tag
+editor breaks particularly structured files). When using the CLI, it is therefore also recommended to use <code class="docutils literal notranslate"><span class="pre">--force-rewrite</span></code>.</p>
+<p>The next section describes how to tweak settings to avoid rewriting at the cost of having <em>no</em> backup, having some
+padding within the files and/or storing tags at the end of the file.</p>
+<p>Nevertheless, it will not always be possible to avoid rewriting a file in all cases. You can configure a
+directory for temporary files within the GUI settings or with the CLI option <code class="docutils literal notranslate"><span class="pre">--temp-dir</span></code>. Then you can easily clean up all
+temporary files at once. For efficiency, the temporary directory should be on the same file system
+as the files you are editing. A feature to delete temporary files automatically has not yet been implemented.</p>
+</section>
+<section id="file-layout-options">
+<h2>File layout options<a class="headerlink" href="#file-layout-options" title="Link to this heading">¶</a></h2>
+<section id="tag-position">
+<h3>Tag position<a class="headerlink" href="#tag-position" title="Link to this heading">¶</a></h3>
+<p>The editor allows you to choose whether tags should be placed at the beginning or at the end of an MP4/Matroska file.
+Placing tags at the end of the file can avoid having to rewrite the entire file to apply changes.</p>
+<p>In the CLI, this is controlled via the <code class="docutils literal notranslate"><span class="pre">--tag-pos</span></code> option.
+To enforce a specific <code class="docutils literal notranslate"><span class="pre">--tag-pos</span></code>, even if this requires the file to be rewritten, combine it with the <code class="docutils literal notranslate"><span class="pre">--force</span></code> option.</p>
+<p>ID3v2 tags and Vorbis/Opus comments can only be placed at the beginning. ID3v1 tags can only be placed at the end of the
+file. Hence, this configuration has no effect when dealing with such tags.</p>
+</section>
+<section id="index-position">
+<h3>Index position<a class="headerlink" href="#index-position" title="Link to this heading">¶</a></h3>
+<p>It is also possible to control the position of the index/cues. However, this is currently only supported when dealing
+with Matroska files.</p>
+<p>Note: This can not be implemented for MP4 since tags and index are tied to each other. When dealing with MP4 files, the
+index position will always be the same as the tag position.</p>
+<section id="faststart">
+<h4>Faststart<a class="headerlink" href="#faststart" title="Link to this heading">¶</a></h4>
+<p>Putting the index at the beginning of the file is sometimes called <em>faststart</em>.</p>
+<p>For forcing <em>faststart</em> via the CLI, the following options are required:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="o">--</span><span class="n">index</span><span class="o">-</span><span class="n">pos</span> <span class="n">front</span> <span class="o">--</span><span class="n">force</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="padding">
+<h3>Padding<a class="headerlink" href="#padding" title="Link to this heading">¶</a></h3>
+<p>Padding allows for adding additional tag information without rewriting the entire file or appending the tag. The usage of
+padding can be configured:</p>
+<ul class="simple">
+<li><p>minimum/maximum padding: The file is rewritten if the padding would fall below or exceed the specified limits.</p></li>
+<li><p>preferred padding: If the file is rewritten, the preferred padding is used.</p></li>
+</ul>
+<p>It is also possible to force rewriting the entire file to ensure the preferred padding is used.</p>
+<p>The relevant CLI options are <code class="docutils literal notranslate"><span class="pre">--min-padding</span></code>, <code class="docutils literal notranslate"><span class="pre">--max-padding</span></code>, <code class="docutils literal notranslate"><span class="pre">--preferred-padding</span></code> and <code class="docutils literal notranslate"><span class="pre">--force-rewrite</span></code>.</p>
+<p>Taking advantage of padding is currently not supported when dealing with Ogg streams (it is supported when
+dealing with raw FLAC streams).</p>
+</section>
+<section id="avoid-rewriting-files">
+<h3>Avoid rewriting files<a class="headerlink" href="#avoid-rewriting-files" title="Link to this heading">¶</a></h3>
+<p>As explained in the “<a class="reference internal" href="#backuptemporary-files"><span class="xref myst">Backup/temporary files</span></a>” section, this is not a good idea, as the
+temporary file that is created when rewriting the entire file also serves as a backup. However, if you nevertheless
+want to avoid rewriting the file as much as possible, set the following in the GUI’s “File layout” settings:</p>
+<ul class="simple">
+<li><p>“Force rewrite…” option: unchecked</p></li>
+<li><p>“Use preferred position…” options: unchecked</p></li>
+<li><p>Minimum padding: 0</p></li>
+<li><p>Maximum padding: 429496729 (simply a very high number)</p></li>
+</ul>
+<p>When using the CLI, you just need to add <code class="docutils literal notranslate"><span class="pre">--max-padding</span> <span class="pre">429496729</span></code> to the CLI arguments (and avoid any of the other
+arguments mentioned in the previous sections).</p>
+</section>
+<section id="improve-performance">
+<h3>Improve performance<a class="headerlink" href="#improve-performance" title="Link to this heading">¶</a></h3>
+<p>Editing large files (especially Matroska files) can take some time. To improve performance, put the index at the
+end of the file (CLI option <code class="docutils literal notranslate"><span class="pre">--index-pos</span> <span class="pre">back</span></code>) because then the size of the index will never have to be recalculated.
+Also, follow the advice from the “<a class="reference internal" href="#backuptemporary-files"><span class="xref myst">Backup/temporary files</span></a>” section to force rewriting and to
+put the temporary directory on the same filesystem as the file you are editing. Forcing a rewrite can improve
+performance because then the tag editor will not even try to see whether it could be avoided and can thus skip
+computations that can take a notable amount of time for large Matroska files.</p>
+<p>Of course, being able to avoid a rewrite would still be more optimal. Check out the previous section for how to achieve
+this. To improve performance further when avoiding a rewrite, put the tag at the end (CLI option <code class="docutils literal notranslate"><span class="pre">--tag-pos</span> <span class="pre">back</span></code>).
+Then the tag editor will not even try to put tags at the front and can thus skip a few computations. (Avoiding a
+rewrite is still not a good idea in general.)</p>
+</section>
+</section>
+<section id="matroska-related-remarks">
+<h2>Matroska-related remarks<a class="headerlink" href="#matroska-related-remarks" title="Link to this heading">¶</a></h2>
+<p>The Matroska container format (and WebM, which is based on Matroska) deviates from common conventions. As a result,
+not all CLI examples provided below are applicable to these file types.</p>
+<p>In general, a single Matroska file can contain multiple tags, each with a <em>target</em> that determines what the tag’s
+fields apply to, such as an individual song or the entire album. When using the CLI or GUI, it is important to be
+mindful of which tag/target you are adding fields to.</p>
+<p>Matroska also does <em>not</em> use one combined field for the track/disk number and total as other formats do. It instead
+uses the separate fields <code class="docutils literal notranslate"><span class="pre">part</span></code> and <code class="docutils literal notranslate"><span class="pre">totalparts</span></code>, which again need to be added to a tag of the desired target (e.g.,
+50/”ALBUM” for the track number and total).</p>
+<p>Check out the official <a class="reference external" href="https://matroska.org/technical/tagging.html">Matroska documentation on tagging</a> for details.
+It also contains examples for <a class="reference external" href="https://matroska.org/technical/tagging-audio-example.html">audio content</a> and
+<a class="reference external" href="https://matroska.org/technical/tagging-video-example.html">video content</a>.</p>
+<p>Note that Tag Editor does <em>not</em> support the XML format mentioned in the Matroska documentation. In the GUI, you can
+simply add/remove/edit tags and their targets via the controls at the top of the editor. In the settings, you can also
+specify that tags of certain targets should be added automatically when loading a file. When using the CLI, you can
+specify that a field should be added to a tag of a certain target by specifying the target <em>before</em> that field. You
+can also explicitly remove tags of certain targets. Examples of the concrete CLI usage can be found below.</p>
+</section>
+<section id="download">
+<h2>Download<a class="headerlink" href="#download" title="Link to this heading">¶</a></h2>
+<section id="source">
+<h3>Source<a class="headerlink" href="#source" title="Link to this heading">¶</a></h3>
+<p>See the <a class="reference external" href="https://github.com/Martchus/tageditor/releases">release section on GitHub</a>.</p>
+</section>
+<section id="packages-and-binaries">
+<h3>Packages and binaries<a class="headerlink" href="#packages-and-binaries" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Arch Linux</p>
+<ul>
+<li><p>For PKGBUILDs, check out <a class="reference external" href="https://github.com/Martchus/PKGBUILDs">my GitHub repository</a> or
+<a class="reference external" href="https://aur.archlinux.org/packages?SeB=m&amp;amp;K=Martchus">the AUR</a>.</p></li>
+<li><p>There is also a <a class="reference external" href="https://martchus.dyn.f3l.de/repo/arch/ownstuff">binary repository</a>.</p></li>
+</ul>
+</li>
+<li><p>Tumbleweed, Leap, Fedora</p>
+<ul>
+<li><p>RPM *.spec files and binaries are available via the openSUSE Build Service.</p>
+<ul>
+<li><p>remarks</p>
+<ul>
+<li><p>Install preferably the <code class="docutils literal notranslate"><span class="pre">tageditor-qt6</span></code> package if it is available for your OS.</p></li>
+<li><p>Be sure to add the repository that matches the version of your OS and to keep it
+in sync when upgrading.</p></li>
+<li><p>The linked download pages might be incomplete; use the repositories’ URL for a full
+list.</p></li>
+</ul>
+</li>
+<li><p>latest releases: <a class="reference external" href="https://software.opensuse.org/download.html?project=home:mkittler&amp;amp;package=tageditor">download page</a>,
+<a class="reference external" href="https://download.opensuse.org/repositories/home:/mkittler">repositories URL</a>,
+<a class="reference external" href="https://build.opensuse.org/project/show/home:mkittler">project page</a></p></li>
+<li><p>Git master: <a class="reference external" href="https://software.opensuse.org/download.html?project=home:mkittler:vcs&amp;amp;package=tageditor">download page</a>,
+<a class="reference external" href="https://download.opensuse.org/repositories/home:/mkittler:/vcs">repositories URL</a>,
+<a class="reference external" href="https://build.opensuse.org/project/show/home:mkittler:vcs">project page</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Exherbo</p>
+<ul>
+<li><p>There is a <a class="reference external" href="https://git.exherbo.org/summer/packages/media-sound/tageditor">package in the platypus repository</a>.</p></li>
+</ul>
+</li>
+<li><p>Gentoo</p>
+<ul>
+<li><p>There is a <a class="reference external" href="https://gitlab.com/Perfect_Gentleman/PG_Overlay">package in perfect7gentleman’s repository</a>.</p></li>
+</ul>
+</li>
+<li><p>Void Linux</p>
+<ul>
+<li><p>Available as package <code class="docutils literal notranslate"><span class="pre">tageditor</span></code> from the
+<a class="reference external" href="https://voidlinux.org/packages/?q=tageditor">official repositories</a>.</p></li>
+</ul>
+</li>
+<li><p>Other GNU/Linux systems</p>
+<ul>
+<li><p>For generic, self-contained binaries, check out the <a class="reference external" href="https://github.com/Martchus/tageditor/releases">release section on GitHub</a>.</p>
+<ul>
+<li><p>Requires glibc&gt;=2.26, OpenGL, and libX11.</p>
+<ul>
+<li><p>openSUSE Leap 15, Fedora 27, Debian 10, and Ubuntu 18.04 are recent enough (be sure
+the packages <code class="docutils literal notranslate"><span class="pre">libglx0</span></code>, <code class="docutils literal notranslate"><span class="pre">libopengl0</span></code>, and <code class="docutils literal notranslate"><span class="pre">libegl1</span></code> are installed on Debian/Ubuntu).</p></li>
+</ul>
+</li>
+<li><p>Supports X11 and Wayland (set the environment variable <code class="docutils literal notranslate"><span class="pre">QT_QPA_PLATFORM=xcb</span></code> to disable
+native Wayland support if it does not work on your system).</p></li>
+<li><p>Binaries are signed with the GPG key
+<a class="reference external" href="https://keyserver.ubuntu.com/pks/lookup?search=B9E36A7275FC61B464B67907E06FE8F53CDC6A4C&amp;amp;fingerprint=on&amp;amp;op=index"><code class="docutils literal notranslate"><span class="pre">B9E36A7275FC61B464B67907E06FE8F53CDC6A4C</span></code></a>.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Windows</p>
+<ul>
+<li><p>For binaries, check out the <a class="reference external" href="https://github.com/Martchus/tageditor/releases">release section on GitHub</a>.</p>
+<ul>
+<li><p>Windows SmartScreen will likely block the execution (you’ll get a window saying “Windows protected your PC”);
+right-click on the executable, select properties, and tick the checkbox to allow the execution.</p></li>
+<li><p>Antivirus software often <strong>wrongly</strong> considers the executable harmful. This is a known problem. Please don’t create
+issues about it.</p></li>
+<li><p>The Qt 6-based version is stable and preferable but only supports Windows 10 version 1809 and newer.</p></li>
+<li><p>The Qt 5-based version should still work on older versions down to Windows 7, although this is not regularly checked.</p></li>
+<li><p>The Universal CRT needs to be <a class="reference external" href="https://learn.microsoft.com/en-us/cpp/windows/universal-crt-deployment#central-deployment">installed</a>.</p></li>
+<li><p>Binaries are signed with the GPG key
+<a class="reference external" href="https://keyserver.ubuntu.com/pks/lookup?search=B9E36A7275FC61B464B67907E06FE8F53CDC6A4C&amp;amp;fingerprint=on&amp;amp;op=index"><code class="docutils literal notranslate"><span class="pre">B9E36A7275FC61B464B67907E06FE8F53CDC6A4C</span></code></a>.</p></li>
+</ul>
+</li>
+<li><p>There is also a <a class="reference external" href="https://community.chocolatey.org/packages/tageditor">Chocolatey package</a> maintained by bcurran3.</p></li>
+<li><p>For mingw-w64 PKGBUILDs, check out <a class="reference external" href="https://github.com/Martchus/PKGBUILDs">my GitHub repository</a>.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<p>The Tag Editor has a Qt-based GUI and a command-line interface. For a C++ library
+interface, check out the underlying tagparser library.</p>
+<section id="gui">
+<h3>GUI<a class="headerlink" href="#gui" title="Link to this heading">¶</a></h3>
+<p>The GUI should be self-explanatory; a lot of the UI elements have tooltips with further explanations.
+The basic workflow is quite simple:</p>
+<ol class="arabic simple" start="0">
+<li><p>Open a file</p></li>
+<li><p>Edit the tags</p></li>
+<li><p>Save changes</p></li>
+</ol>
+<p>You can set the behavior of the editor to keep previous values, so you don’t have to enter
+information like the album name or artist for all files in an album again and again.</p>
+<section id="limitations">
+<h4>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">¶</a></h4>
+<p>The GUI does <em>not</em> support setting multiple values of the same field (besides covers of
+different types). If a file already contains fields with multiple values, the additional values
+are discarded. Use the CLI if support for multiple values per field is required. Not all tag formats
+support this anyway, though.</p>
+<p>The GUI does <em>not</em> support batch processing. I recommend using the CLI for this.</p>
+</section>
+<section id="screenshots">
+<h4>Screenshots<a class="headerlink" href="#screenshots" title="Link to this heading">¶</a></h4>
+<section id="main-window-under-openbox-qt5ct-with-breeze-theme-icons">
+<h5>Main window under Openbox/qt5ct with Breeze theme/icons<a class="headerlink" href="#main-window-under-openbox-qt5ct-with-breeze-theme-icons" title="Link to this heading">¶</a></h5>
+<p><img alt="main window/Openbox/qt5ct/Breeze theme" src="resources/screenshots/mainwindow.png?raw=true" /></p>
+</section>
+<section id="main-window-under-plasma-5-with-dark-breeze-theme-icons">
+<h5>Main window under Plasma 5 with dark Breeze theme/icons<a class="headerlink" href="#main-window-under-plasma-5-with-dark-breeze-theme-icons" title="Link to this heading">¶</a></h5>
+<p>This screenshot shows the experimental MusicBrainz/LyricWiki search.</p>
+<p><img alt="main window/Plasma 5/dark Breeze theme" src="resources/screenshots/mainwindow-1366x768.png?raw=true" /></p>
+</section>
+</section>
+<section id="settings">
+<h4>Settings<a class="headerlink" href="#settings" title="Link to this heading">¶</a></h4>
+<p>Check out the settings dialog. You can:</p>
+<ul class="simple">
+<li><p>Customize which fields the editor shows and in which order.</p></li>
+<li><p>Change settings regarding the tag processing (ID3 version(s) to be used, preferred character set, usage of padding, etc.).</p></li>
+<li><p>Set whether unknown/unsupported tags should be ignored/kept or removed.</p></li>
+<li><p>Set whether ID3v1 and ID3v2 tags should be edited together or separately.</p></li>
+<li><p>Set the directory used to store temporary files.</p></li>
+<li><p>Set the desired file layout options (see section “<a class="reference internal" href="#file-layout-options"><span class="xref myst">File layout options</span></a>”).</p></li>
+<li><p>Enable auto-correction features like trimming whitespaces.</p></li>
+</ul>
+<p>Settings of the GUI do not affect the CLI.</p>
+</section>
+<section id="file-renaming">
+<h4>File renaming<a class="headerlink" href="#file-renaming" title="Link to this heading">¶</a></h4>
+<p>There is also a tool to rename files using the tag information stored in them. The new name for each file is
+generated by a small JavaScript that can be customized. An example script is provided. Before any actual changes are
+made, you will see a preview with the generated file names. As shown in the example script, it is also possible to
+move files into another directory.</p>
+</section>
+<section id="musicbrainz-cover-art-archive-and-lyricwiki-search">
+<h4>MusicBrainz, Cover Art Archive and LyricWiki search<a class="headerlink" href="#musicbrainz-cover-art-archive-and-lyricwiki-search" title="Link to this heading">¶</a></h4>
+<p>The tag editor also features a MusicBrainz, Cover Art Archive and LyricWiki search.</p>
+<ol class="arabic simple" start="0">
+<li><p>Open the search by pressing <em>F10</em>.</p></li>
+<li><p>Open the first file in the album.</p></li>
+<li><p>If the album and artist are already present, those are automatically inserted as search terms. Otherwise, you need to
+enter the album and artist to search for manually. It makes the most sense to search for an entire album and therefore
+leave the fields for track number and title blank.</p></li>
+<li><p>Click on “Search” and select one of the query options.</p></li>
+<li><p>Select the row and fields to be used and click on “Use row”. You can also double-click the row you want to use.</p></li>
+<li><p>Use the “Insert automatically” option to insert search results for the next files automatically when you open them.
+To find the matching row for the song in the search results, the title or track number needs to be present. If the artist
+and album are present as well, these are also tried to match for further disambiguation.</p></li>
+</ol>
+<section id="notes">
+<h5>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>The context menu on the list of results provides further options, e.g., to open the result in a web browser.</p></li>
+<li><p>There are shortcuts to trigger the different queries.</p></li>
+<li><p>LyricWiki was shut down completely on September 21, 2020, so the LyricWiki search is no longer working.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="cli">
+<h3>CLI<a class="headerlink" href="#cli" title="Link to this heading">¶</a></h3>
+<section id="id1">
+<h4>Usage<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="o">&lt;</span><span class="n">operation</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Check out the available operations and options with <code class="docutils literal notranslate"><span class="pre">--help</span></code>. For a list of all available field names, track
+attribute names, and modifiers, use the CLI option <code class="docutils literal notranslate"><span class="pre">--print-field-names</span></code>. Not all fields are supported by all
+tag/container formats. Most notably, the Matroska container format does not use <code class="docutils literal notranslate"><span class="pre">track</span></code>/<code class="docutils literal notranslate"><span class="pre">disk</span></code> to store the
+track/disk number and total in one field. Instead, the fields <code class="docutils literal notranslate"><span class="pre">part</span></code> and <code class="docutils literal notranslate"><span class="pre">totalparts</span></code> need to be used on the
+desired target.</p>
+<p>Note that Windows users must use <code class="docutils literal notranslate"><span class="pre">tageditor-cli.exe</span></code> instead of <code class="docutils literal notranslate"><span class="pre">tageditor.exe</span></code> or use Mintty as a terminal.
+Check out the “<a class="reference internal" href="#windows-specific-issues"><span class="xref myst">Windows-specific issues</span></a>” section for details.</p>
+</section>
+<section id="examples">
+<h4>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h4>
+<p>Here are some Bash examples that illustrate getting and setting tag information:</p>
+<section id="reading-tags">
+<h5>Reading tags<a class="headerlink" href="#reading-tags" title="Link to this heading">¶</a></h5>
+<ul>
+<li><p>Displays title, album, and artist of all *.m4a files in the specified directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="n">get</span> <span class="n">title</span> <span class="n">album</span> <span class="n">artist</span> <span class="o">--</span><span class="n">files</span> <span class="o">/</span><span class="n">some</span><span class="o">/</span><span class="nb">dir</span><span class="o">/*.</span><span class="n">m4a</span>
+</pre></div>
+</div>
+</li>
+<li><p>Displays all supported fields of all *.mkv files in the specified directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="n">get</span> <span class="o">--</span><span class="n">files</span> <span class="o">/</span><span class="n">some</span><span class="o">/</span><span class="nb">dir</span><span class="o">/*.</span><span class="n">mkv</span>
+</pre></div>
+</div>
+</li>
+<li><p>Extracts the cover of the specified (Opus) file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="n">extract</span> <span class="n">cover</span> <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="n">file</span> <span class="n">the</span><span class="o">-</span><span class="n">cover</span><span class="o">.</span><span class="n">jpg</span> <span class="o">--</span><span class="n">file</span> <span class="n">some</span><span class="o">-</span><span class="n">file</span><span class="o">.</span><span class="n">opus</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>No conversion is done by the tag editor. This command assumes that the cover is a JPEG image.</p></li>
+<li><p>The extraction works for other fields like lyrics as well.</p></li>
+<li><p>For Matroska attachments, one needs to use <code class="docutils literal notranslate"><span class="pre">--attachment</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Displays technical information about all *.m4a files in the specified directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="n">info</span> <span class="o">--</span><span class="n">files</span> <span class="o">/</span><span class="n">some</span><span class="o">/</span><span class="nb">dir</span><span class="o">/*.</span><span class="n">m4a</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="modifying-tags-and-track-attributes">
+<h5>Modifying tags and track attributes<a name="writing-tags"></a><a class="headerlink" href="#modifying-tags-and-track-attributes" title="Link to this heading">¶</a></h5>
+<ul>
+<li><p>Sets title, album, artist, cover, and track number of all *.m4a files in the specified directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Title of &quot;</span><span class="p">{</span><span class="mi">1</span><span class="n">st</span><span class="p">,</span><span class="mi">2</span><span class="n">nd</span><span class="p">,</span><span class="mi">3</span><span class="n">rd</span><span class="p">}</span><span class="s2">&quot; file&quot;</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Title of &quot;</span><span class="p">{</span><span class="mf">4..16</span><span class="p">}</span><span class="s2">&quot;th file&quot;</span> \
+  <span class="n">album</span><span class="o">=</span><span class="s2">&quot;The Album&quot;</span> <span class="n">artist</span><span class="o">=</span><span class="s2">&quot;The Artist&quot;</span> \
+  <span class="n">cover</span><span class="s1">&#39;=/path/to/image&#39;</span> <span class="n">lyrics</span><span class="s1">&#39;&gt;=/path/to/lyrics&#39;</span> <span class="n">track</span><span class="s1">&#39;+=1/16&#39;</span> <span class="o">--</span><span class="n">files</span> <span class="o">/</span><span class="n">some</span><span class="o">/</span><span class="nb">dir</span><span class="o">/*.</span><span class="n">m4a</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>As shown, it is possible to specify multiple files at once.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> after the field name <code class="docutils literal notranslate"><span class="pre">lyrics</span></code> causes the tag editor to read the value from the specified file.
+This works for other fields as well and is implied for <code class="docutils literal notranslate"><span class="pre">cover</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">+</span></code> sign after the field name <code class="docutils literal notranslate"><span class="pre">track</span></code> indicates that the field value should be increased after a file
+has been processed.</p></li>
+<li><p>Specifying a field multiple times allows one to specify different values for the different files.</p>
+<ul>
+<li><p>So in this example, the first file will get the title <em>Title of 1st file</em>, the second file will get the
+name <em>Title of 2nd file</em>, and so on.</p></li>
+<li><p>The 16th and following files will all get the title <em>Title of the 16th file</em>.</p></li>
+<li><p>All files will get the album name <em>The Album</em>, the artist <em>The Artist</em>, the cover image from the
+file <code class="docutils literal notranslate"><span class="pre">/path/to/image</span></code>, and the lyrics from the file <code class="docutils literal notranslate"><span class="pre">/path/to/lyrics</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Sets the title of both specified files and the album of the second specified file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="n">title0</span><span class="o">=</span><span class="s2">&quot;Title for both files&quot;</span> <span class="n">album1</span><span class="o">=</span><span class="s2">&quot;Album for 2nd file&quot;</span> \
+  <span class="o">--</span><span class="n">files</span> <span class="n">file1</span><span class="o">.</span><span class="n">ogg</span> <span class="n">file2</span><span class="o">.</span><span class="n">mp3</span>
+</pre></div>
+</div>
+<p>The number after the field name specifies the index of the first file to use the value for. The first index is 0.</p>
+</li>
+<li><p>Sets the title specifically for the track with the ID <code class="docutils literal notranslate"><span class="pre">3134325680</span></code> and removes
+the tags targeting the song/track and the album/movie/episode in general:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="n">target</span><span class="o">-</span><span class="n">level</span><span class="o">=</span><span class="mi">30</span> <span class="n">target</span><span class="o">-</span><span class="n">tracks</span><span class="o">=</span><span class="mi">3134325680</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Title for track 3134325680&quot;</span> \
+  <span class="o">--</span><span class="n">remove</span><span class="o">-</span><span class="n">target</span> <span class="n">target</span><span class="o">-</span><span class="n">level</span><span class="o">=</span><span class="mi">50</span> <span class="o">--</span><span class="n">remove</span><span class="o">-</span><span class="n">target</span> <span class="n">target</span><span class="o">-</span><span class="n">level</span><span class="o">=</span><span class="mi">30</span> \
+  <span class="o">--</span><span class="n">files</span> <span class="n">file</span><span class="o">.</span><span class="n">mka</span>
+</pre></div>
+</div>
+<p>For more information, check out the <a class="reference external" href="https://matroska.org/technical/specs/tagging/index.html">Matroska specification</a>.</p>
+</li>
+<li><p>Sets custom fields:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>tageditor set mkv:FOO=bar1 mp4:©foo=bar2 -f file.mkv file.m4a
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>In particular, the custom field <code class="docutils literal notranslate"><span class="pre">FOO</span></code> is set to <code class="docutils literal notranslate"><span class="pre">bar1</span></code> in file.mkv, and the custom field <code class="docutils literal notranslate"><span class="pre">©foo</span></code>
+is set to <code class="docutils literal notranslate"><span class="pre">bar2</span></code> in file.m4a. So the prefixes tell the tag editor that the specified field
+ID is a native field ID of a particular tag format rather than a generic identifier. Native
+fields are only applied to the corresponding format, of course.</p></li>
+<li><p>The following prefixes are supported:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">mp4</span></code>: iTunes-style MP4/M4A ID (must be exactly 4 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mkv</span></code>: Matroska ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id3</span></code>: ID3v2 ID (must be exactly 3 or 4 characters depending on the tag version)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vorbis</span></code>: Vorbis comment ID, also works for Opus (which uses Vorbis comments as well).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Removes the “forced” flag from all tracks, flags the track with the ID 2 as “default”, and sets its language to “ger”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="n">track</span><span class="o">-</span><span class="nb">id</span><span class="o">=</span><span class="nb">all</span> <span class="n">forced</span><span class="o">=</span><span class="n">no</span> <span class="n">track</span><span class="o">-</span><span class="nb">id</span><span class="o">=</span><span class="mi">2</span> <span class="n">default</span><span class="o">=</span><span class="n">yes</span> <span class="n">language</span><span class="o">=</span><span class="n">ger</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>So modifying track attributes is possible as well, and it works like setting tag fields.</p></li>
+<li><p>Specific tracks can currently only be referred to by ID.</p></li>
+</ul>
+</li>
+<li><p>Here is another example, demonstrating the use of arrays and the syntax to auto-increase numeric fields such as the track number:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">some</span><span class="o">/</span><span class="nb">dir</span>
+<span class="c1"># create an empty array</span>
+<span class="n">titles</span><span class="o">=</span><span class="p">()</span>
+<span class="c1"># iterate through all music files in the directory</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="o">*.</span><span class="n">m4a</span><span class="p">;</span> <span class="n">do</span> \
+    <span class="c1"># truncate the first 10 characters</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{file:10}</span><span class="s2">&quot;</span><span class="p">;</span> \
+    <span class="c1"># append the title truncating the extension</span>
+    <span class="n">titles</span><span class="o">+=</span><span class="p">(</span><span class="s2">&quot;title=${title%.*}&quot;</span><span class="p">);</span> \
+<span class="n">done</span>
+<span class="c1"># now set the titles and other tag information</span>
+<span class="n">tageditor</span> <span class="nb">set</span> <span class="s2">&quot;$</span><span class="si">{titles[@]}</span><span class="s2">&quot;</span> <span class="n">album</span><span class="o">=</span><span class="s2">&quot;Some Album&quot;</span> <span class="n">track</span><span class="o">+=</span><span class="mi">1</span><span class="o">/</span><span class="mi">25</span> <span class="n">disk</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span> <span class="o">-</span><span class="n">f</span> <span class="o">*.</span><span class="n">m4a</span>
+</pre></div>
+</div>
+</li>
+<li><p>Sets a cover of a special type with a description:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="n">cover</span><span class="o">=</span><span class="s2">&quot;:front-cover&quot;</span> <span class="n">cover0</span><span class="o">=</span><span class="s2">&quot;/path/to/back-cover.jpg:back-cover:The description&quot;</span> <span class="o">-</span><span class="n">f</span> <span class="n">foo</span><span class="o">.</span><span class="n">mp3</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The general syntax is <code class="docutils literal notranslate"><span class="pre">path:cover-type:description</span></code>. The cover type and description are optional. The
+delimiter can be changed via <code class="docutils literal notranslate"><span class="pre">--cover-type-delimiter</span></code>, which is useful if the path includes a <code class="docutils literal notranslate"><span class="pre">:</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">0</span></code> after the 2nd <code class="docutils literal notranslate"><span class="pre">cover</span></code> is required. Otherwise, the 2nd cover would only be set in the 2nd file (which
+is not even specified in this example).</p></li>
+<li><p>In this example, the front cover is removed (by passing an empty path), and the back cover is set to the specified
+file and description. Existing covers of other types and with other descriptions are not affected.</p></li>
+<li><p>When specifying a cover without type, all existing covers are replaced, and the new cover will be of the
+type “other”.</p>
+<ul>
+<li><p>To replace all existing covers when specifying a cover type, use e.g., <code class="docutils literal notranslate"><span class="pre">…</span> <span class="pre">cover=</span> <span class="pre">cover0=&quot;/path/to/back-cover.jpg:back-cover&quot;</span></code>.</p></li>
+</ul>
+</li>
+<li><p>It is possible to add multiple covers of the same type with only different descriptions. However, when
+leaving the description out (the 2nd <code class="docutils literal notranslate"><span class="pre">:</span></code> is absent), all existing covers of the specified type are replaced, and
+the new cover will have an empty description.</p>
+<ul>
+<li><p>To affect only the covers with an empty description, be sure to keep the trailing <code class="docutils literal notranslate"><span class="pre">:</span></code>.</p></li>
+<li><p>To remove all existing covers of a certain type but regardless of the description, use e.g., <code class="docutils literal notranslate"><span class="pre">…</span> <span class="pre">cover=&quot;:back-cover&quot;</span></code>.</p></li>
+</ul>
+</li>
+<li><p>The names of all cover types can be shown via <code class="docutils literal notranslate"><span class="pre">tageditor</span> <span class="pre">--print-field-names</span></code>.</p></li>
+<li><p>This is only supported by the tag formats ID3v2 and Vorbis Comment. The type and description are ignored
+when dealing with a different format.</p></li>
+</ul>
+</li>
+<li><p>Sets fields by running a script to compute changes dynamically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="o">--</span><span class="n">pedantic</span> <span class="n">debug</span> <span class="o">--</span><span class="n">script</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">script</span><span class="o">.</span><span class="n">js</span> <span class="o">-</span><span class="n">f</span> <span class="n">foo</span><span class="o">.</span><span class="n">mp3</span>
+</pre></div>
+</div>
+<ul>
+<li><p>This feature is still experimental. The script API is still subject to change.</p></li>
+<li><p>The script needs to be ECMAScript as supported by the Qt framework.</p></li>
+<li><p>This feature requires the tag editor to be configured with Qt QML as a JavaScript provider at
+compile time. Check out the build instructions under “Building with Qt GUI” for details.</p></li>
+<li><p>The script needs to export a <code class="docutils literal notranslate"><span class="pre">main()</span></code> function. This function is invoked for every file and
+passed an object representing the current file as the first argument. The file is only modified if
+<code class="docutils literal notranslate"><span class="pre">main()</span></code> returns a truthy value or <code class="docutils literal notranslate"><span class="pre">undefined</span></code>; otherwise, the file is skipped completely (and
+thus not modified at all, so values passed via <code class="docutils literal notranslate"><span class="pre">--values</span></code> are not applied).</p></li>
+<li><p>Check out the file
+<a class="reference download internal" download="" href="_downloads/cbf03941c6d29e9c9db2d0ab15683f12/resize-covers.js"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">resources/scripts/scriptapi/resize-covers.js</span></code></span></a>
+in this repository that scales all cover images in a file down to the specified maximum size.
+It can be invoked like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>tageditor set --pedantic debug --script :/scripts/resize-covers.js --script-settings coverSize=512 coverFormat=JPEG` -f …
+</pre></div>
+</div>
+<p>Note that this example uses a path starting with <code class="docutils literal notranslate"><span class="pre">:/scripts/…</span></code> to use the built-in version of
+that script. In case you want to modify the script, you can, of course, grab it from this code
+repository, do the editing, and then just specify a normal path.</p>
+</li>
+<li><p>Check out the file
+<a class="reference download internal" download="" href="_downloads/875f2d4e96a3591c225335a7f468241c/set-tags.js"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">resources/scripts/scriptapi/set-tags.js</span></code></span></a> in this
+repository for an example that applies basic fixes and tries to fetch lyrics and cover art
+when the according settings are passed. It can be invoked like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="o">--</span><span class="n">pedantic</span> <span class="n">debug</span> <span class="o">--</span><span class="n">script</span> <span class="p">:</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="nb">set</span><span class="o">-</span><span class="n">tags</span><span class="o">.</span><span class="n">js</span> <span class="o">--</span><span class="n">script</span><span class="o">-</span><span class="n">settings</span> <span class="n">addCover</span><span class="o">=</span><span class="mi">1</span> <span class="n">addLyrics</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>The remark about the path from the previous point applies here as well.</p>
+</li>
+<li><p>For debugging, the option <code class="docutils literal notranslate"><span class="pre">--pedantic</span> <span class="pre">debug</span></code> is very useful. You may also add
+<code class="docutils literal notranslate"><span class="pre">--script-settings</span> <span class="pre">dryRun=1</span></code> and check for that setting within the script as shown in
+<code class="docutils literal notranslate"><span class="pre">resources/scripts/scriptapi/resize-covers.js</span></code> and <code class="docutils literal notranslate"><span class="pre">resources/scripts/scriptapi/set-tags.js</span></code>.</p></li>
+<li><p>Common tag fields are exposed as object properties as shown in the mentioned example files.</p>
+<ul class="simple">
+<li><p>Only properties for fields that are supported by the tag are added to the “fields” object.</p></li>
+<li><p>Adding properties of unsupported fields manually does not work; those will just be ignored.</p></li>
+<li><p>The properties for fields that are absent in the tag have an empty array assigned. You may
+also assign an empty array to fields to delete them.</p></li>
+<li><p>The content of binary fields is exposed as <code class="docutils literal notranslate"><span class="pre">ArrayBuffer</span></code>. You must also use an <code class="docutils literal notranslate"><span class="pre">ArrayBuffer</span></code>
+to set the value of binary fields such as the cover.</p></li>
+<li><p>The content of other fields is mostly exposed as <code class="docutils literal notranslate"><span class="pre">String</span></code> or <code class="docutils literal notranslate"><span class="pre">Number</span></code>. You must also use
+one of those types to set the value of those fields. The string representation of the
+assigned content will then be converted automatically to what’s needed internally.</p></li>
+</ul>
+</li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">utility</span></code> object exposes useful methods, e.g., for logging and controlling the event loop.</p></li>
+<li><p>Check out the file <code class="docutils literal notranslate"><span class="pre">resources/scripts/scriptapi/http.js</span></code> in this repository for an example of
+using XHR and controlling the event loop.</p></li>
+<li><p>The script runs after tags are added/removed (according to options like <code class="docutils literal notranslate"><span class="pre">--id3v1-usage</span></code>).
+So the tags present during script execution don’t necessarily represent tags that are actually
+present in the file on disk (but rather the tags that will be present after saving the file).</p></li>
+<li><p>The script is executed before any other modifications are applied. So if you also specify
+values as usual (via <code class="docutils literal notranslate"><span class="pre">--values</span></code>), then these values have precedence over values set by the
+script.</p></li>
+<li><p>It is also possible to rename the file (via e.g., <code class="docutils literal notranslate"><span class="pre">file.rename(newPath)</span></code>). This will be done
+immediately and also if <code class="docutils literal notranslate"><span class="pre">main()</span></code> returns a falsy value (so it is possible to only rename a
+file without modifying it by returning a falsy value). If the specified path is relative, it
+is interpreted relative to the current directory of the file (and <em>not</em> to the current working
+directory of the tag editor).</p></li>
+<li><p>It is also possible to open another file via <code class="docutils literal notranslate"><span class="pre">utility.openFile(path)</span></code>. This makes it possible
+to copy tags over from another file, e.g., to insert tags back from original files that have
+been lost when converting to a different format. The mentioned example script <code class="docutils literal notranslate"><span class="pre">set-tags.js</span></code>
+also demonstrates this for covers and lyrics when the according script settings are passed (e.g.,
+<code class="docutils literal notranslate"><span class="pre">--script-settings</span> <span class="pre">addCover=1</span> <span class="pre">originalDir=…</span> <span class="pre">originalExt=…</span></code>). Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd &#39;/…/music&#39;
+find &#39;artist/album&#39; -iname &#39;*.m4a&#39; -exec tageditor set \
+  --pedantic debug \
+  --script :/scripts/set-tags.js \
+  --script-settings dryRun=1 originalDir=&#39;../music-lossless&#39; originalExt=.flac addCover=1 addLyrics=1 \
+  --temp-dir /…/tmp/tageditor \
+  --files {} \+
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="further-useful-commands">
+<h5>Further useful commands<a class="headerlink" href="#further-useful-commands" title="Link to this heading">¶</a></h5>
+<ul>
+<li><p>Let the tag editor return with a non-zero exit code even if only non-fatal problems have been encountered:</p>
+<ul>
+<li><p>When saving a file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="nb">set</span> <span class="o">...</span> <span class="o">--</span><span class="n">pedantic</span> <span class="n">warning</span> <span class="o">-</span><span class="n">f</span> <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+<li><p>When printing technical information to validate the structure of a file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tageditor</span> <span class="n">info</span>  <span class="o">--</span><span class="n">pedantic</span> <span class="n">warning</span> <span class="o">--</span><span class="n">validate</span> <span class="o">-</span><span class="n">f</span> <span class="o">...</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>This is especially useful for MP4 and Matroska files, where the tag editor will be able to emit
+warnings and critical messages when those files are truncated or have a broken index.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+<section id="text-encoding-unicode-support">
+<h2>Text encoding / unicode support<a class="headerlink" href="#text-encoding-unicode-support" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>It is possible to set the preferred encoding used <em>within</em> the tags via the CLI option <code class="docutils literal notranslate"><span class="pre">--encoding</span></code>
+and in the GUI settings.</p>
+<ul class="simple">
+<li><p>In the GUI, this only affects visible fields. In the CLI, this only affects specified fields.
+Re-encoding all text fields is currently not supported.</p></li>
+<li><p>The option is ignored (with a warning) when the specified encoding is not supported by the
+tag format.</p></li>
+</ul>
+</li>
+<li><p>The CLI assumes all arguments to be UTF-8 encoded (no matter which preferred encoding is specified),
+and file names are just passed as specified.</p></li>
+<li><p>The CLI prints all values in UTF-8 encoding (no matter which encoding is actually used in the tag).</p></li>
+</ol>
+</section>
+<section id="build-instructions">
+<h2>Build instructions<a class="headerlink" href="#build-instructions" title="Link to this heading">¶</a></h2>
+<p>The application depends on <a class="reference external" href="https://github.com/Martchus/cpp-utilities">c++utilities</a> and
+<a class="reference external" href="https://github.com/Martchus/tagparser">tagparser</a> and is built the same way as those libraries.
+For basic instructions, check out the README file of <a class="reference external" href="https://github.com/Martchus/cpp-utilities">c++utilities</a>.
+When the Qt GUI is enabled, Qt and <a class="reference external" href="https://github.com/Martchus/qtutilities">qtutilities</a> are also required.</p>
+<p>To avoid building c++utilities/tagparser/qtutilities separately, follow the instructions under
+“Building this straight”. There’s also documentation about
+<a class="reference external" href="https://github.com/Martchus/cpp-utilities/blob/master/doc/buildvariables.md">various build variables</a> that
+can be passed to CMake to influence the build.</p>
+<section id="building-with-qt-gui">
+<h3>Building with Qt GUI<a class="headerlink" href="#building-with-qt-gui" title="Link to this heading">¶</a></h3>
+<p>The Qt GUI is enabled by default. The following Qt modules are required (only the latest Qt 5 and Qt 6 versions have been
+tested):
+core, concurrent, gui, network, widgets, declarative/script, and webenginewidgets/webkitwidgets.</p>
+<p>Note that old Qt versions lack support for modern JavaScript features. To use the JavaScript-based renaming tool,
+it is recommended to use at least Qt 5.12.</p>
+<p>To specify the major Qt version to use, set <code class="docutils literal notranslate"><span class="pre">QT_PACKAGE_PREFIX</span></code> (e.g., add <code class="docutils literal notranslate"><span class="pre">-DQT_PACKAGE_PREFIX:STRING=Qt6</span></code>
+to the CMake arguments).</p>
+<section id="select-qt-module-for-web-view-and-javascript">
+<h4>Select Qt module for web view and JavaScript<a class="headerlink" href="#select-qt-module-for-web-view-and-javascript" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">-DWEBVIEW_PROVIDER:STRING=webkit/webengine/none</span></code> to the CMake arguments to use either Qt WebKit (works with
+the ‘revived’ version as well), Qt WebEngine, or no web view at all. If no web view is used, the file information can only
+be shown using a plain tree view. Otherwise, the user can choose between a web page and a tree view.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">-DJS_PROVIDER:STRING=script/qml/none</span></code> to the CMake arguments to use either Qt Script, Qt QML, or no JavaScript
+engine at all. If no JavaScript engine is used, the renaming utility is disabled.</p></li>
+</ul>
+</section>
+</section>
+<section id="building-without-qt-gui">
+<h3>Building without Qt GUI<a class="headerlink" href="#building-without-qt-gui" title="Link to this heading">¶</a></h3>
+<p>It is possible to build without the GUI if only the CLI is needed. In this case, no Qt dependencies (including qtutilities) are required.</p>
+<p>To build without the GUI, add the following parameters to the CMake call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DWIDGETS_GUI</span><span class="o">=</span><span class="n">OFF</span> <span class="o">-</span><span class="n">DQUICK_GUI</span><span class="o">=</span><span class="n">OFF</span>
+</pre></div>
+</div>
+</section>
+<section id="json-export">
+<h3>JSON export<a class="headerlink" href="#json-export" title="Link to this heading">¶</a></h3>
+<p>As a small demo for <a class="reference external" href="https://github.com/Martchus/reflective-rapidjson">Reflective RapidJSON</a>, the tag editor features an optional
+JSON export. To enable it, add <code class="docutils literal notranslate"><span class="pre">-DENABLE_JSON_EXPORT=ON</span></code> to the CMake arguments.</p>
+<p>When enabled, the following additional dependencies are required (only at build-time): rapidjson, reflective-rapidjson, and llvm/clang.</p>
+</section>
+<section id="building-this-straight">
+<h3>Building this straight<a class="headerlink" href="#building-this-straight" title="Link to this heading">¶</a></h3>
+<ol class="arabic" start="0">
+<li><p>Install (preferably the latest version of) the GCC toolchain or Clang, the required Qt modules,
+<a class="reference external" href="https://salsa.debian.org/iso-codes-team/iso-codes">iso-codes</a>, iconv, zlib, CMake, and Ninja.</p></li>
+<li><p>Get the sources of additional dependencies and the tag editor itself.
+For the latest version from Git, clone the following repositories:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="s2">&quot;$SOURCES&quot;</span>
+<span class="n">git</span> <span class="n">config</span> <span class="n">core</span><span class="o">.</span><span class="n">symlinks</span> <span class="n">true</span>                                          <span class="c1"># only required on Windows</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">cpp</span><span class="o">-</span><span class="n">utilities</span><span class="o">.</span><span class="n">git</span> <span class="n">c</span><span class="o">++</span><span class="n">utilities</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">tagparser</span><span class="o">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">qtutilities</span><span class="o">.</span><span class="n">git</span>                  <span class="c1"># only required for Qt GUI</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">reflective</span><span class="o">-</span><span class="n">rapidjson</span><span class="o">.</span><span class="n">git</span>         <span class="c1"># only required for JSON export</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">tageditor</span><span class="o">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martchus</span><span class="o">/</span><span class="n">subdirs</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">config</span> <span class="pre">core.symlinks=true</span></code> is only required under Windows to handle symlinks correctly.
+This requires a recent Git version and a filesystem that supports symlinks (NTFS works). Additionally,
+you need to
+<a class="reference external" href="https://learn.microsoft.com/en-us/gaming/game-bar/guide/developer-mode">enable Windows Developer Mode</a>.
+If you run into “not found” errors on symlink creation, use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">reset</span> <span class="pre">--hard</span></code> within the repository to
+fix this.</p>
+</li>
+<li><p>Configure the build</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="s2">&quot;$BUILD_DIR&quot;</span>
+<span class="n">cmake</span> \
+ <span class="o">-</span><span class="n">G</span> <span class="n">Ninja</span> \
+ <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Release</span> \
+ <span class="o">-</span><span class="n">DLANGUAGE_FILE_ISO_639_2</span><span class="o">=</span><span class="s2">&quot;/usr/share/iso-codes/json/iso_639-2.json&quot;</span> \
+ <span class="o">-</span><span class="n">DCMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="s2">&quot;/install/prefix&quot;</span> \
+ <span class="o">-</span><span class="n">DQT_PACKAGE_PREFIX</span><span class="p">:</span><span class="n">STRING</span><span class="o">=</span><span class="n">Qt6</span> \
+ <span class="o">-</span><span class="n">DKF_PACKAGE_PREFIX</span><span class="p">:</span><span class="n">STRING</span><span class="o">=</span><span class="n">KF6</span> \
+ <span class="o">-</span><span class="n">DBUILTIN_TRANSLATIONS</span><span class="p">:</span><span class="n">BOOL</span><span class="o">=</span><span class="n">ON</span> \
+ <span class="s2">&quot;$SOURCES/subdirs/tageditor&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">/install/prefix</span></code> with the directory where you want to install.</p></li>
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">/usr/…/iso_639-2.json</span></code> with the path for your iso-codes installation.</p></li>
+</ul>
+</li>
+<li><p>Build and install everything in one step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="s2">&quot;$BUILD_DIR&quot;</span>
+<span class="n">ninja</span> <span class="n">install</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If the install directory is not writable, do <strong>not</strong> conduct the build as root. Instead, set <code class="docutils literal notranslate"><span class="pre">DESTDIR</span></code> to a
+writable location (e.g., <code class="docutils literal notranslate"><span class="pre">DESTDIR=&quot;temporary/install/dir&quot;</span> <span class="pre">ninja</span> <span class="pre">install</span></code>) and move the files from there to
+the desired location afterward.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="id2">
+<h2>Limitations<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>The following features are notably missing:</p>
+<ul class="simple">
+<li><p>Only a limited number of container and audio formats is supported. Support for further file types like JPEG/EXIF,
+PDF metadata, and Theora in Ogg has <em>not</em> been implemented yet.</p></li>
+<li><p>Adding a cue sheet to FLAC files is not yet possible.</p></li>
+</ul>
+<section id="known-problems-and-caveats">
+<h3>Known problems and caveats<a class="headerlink" href="#known-problems-and-caveats" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Large file information is not shown when using Qt WebEngine, or the GUI becomes unresponsive. Use the feature
+to parse the full file structure in combination with the Qt WebEngine-based view with caution.</p></li>
+<li><p>It is recommended to create backups before editing because I can not test whether the underlying library
+works with all kinds of files. When forcing a rewrite, a backup is always created.</p></li>
+<li><p>More TODOs and bugs are tracked in the <a class="reference external" href="https://github.com/Martchus/tageditor/issues">issue section on GitHub</a>.</p></li>
+</ul>
+</section>
+<section id="windows-specific-issues">
+<h3>Windows-specific issues<a class="headerlink" href="#windows-specific-issues" title="Link to this heading">¶</a></h3>
+<p>When using the CLI, it is recommended to use the CLI wrapper instead of the main executable. This is the file that ends
+with <code class="docutils literal notranslate"><span class="pre">-cli.exe</span></code>. Alternatively, you may use Mintty (e.g., via MSYS2) as a terminal.</p>
+<p>Otherwise, be aware of the following issues:</p>
+<ul class="simple">
+<li><p>The console’s codepage is set to UTF-8 to ensure point <em>3.</em> of the “<a class="reference internal" href="#text-encoding--unicode-support"><span class="xref myst">Text encoding / unicode support</span></a>”
+section is handled correctly. This may not work well under older Windows versions. Use <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">ENABLE_CP_UTF8=0</span></code> if this
+is not wanted.</p></li>
+<li><p>The main application is built as a GUI application. To nevertheless enable console output, it is attaching to the
+parent process’s console. However, this prevents redirections to work in most cases. If redirections are needed,
+use <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">ENABLE_CONSOLE=0</span></code> to disable that behavior.</p></li>
+</ul>
+<hr class="docutils" />
+<p>Tag Editor supports
+<a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/hidpi/high-dpi-desktop-application-development-on-windows#per-monitor-and-per-monitor-v2-dpi-awareness">PMv2</a>
+out of the box as of Qt 6. You may tweak settings according to the
+<a class="reference external" href="https://doc.qt.io/qt-6/highdpi.html#configuring-windows">Qt documentation</a>.</p>
+</section>
+</section>
+<section id="copyright-notice-and-license">
+<h2>Copyright notice and license<a class="headerlink" href="#copyright-notice-and-license" title="Link to this heading">¶</a></h2>
+<p>Copyright © 2015-2025 Marius Kittler</p>
+<p>All code is licensed under <a class="reference download internal" download="" href="_downloads/9879d6db96fd29134fc802214163b95a/LICENSE"><span class="xref download myst">GPL-2-or-later</span></a>.</p>
+</section>
+<section id="attribution-for-3rd-party-content">
+<h2>Attribution for 3rd party content<a class="headerlink" href="#attribution-for-3rd-party-content" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The program icon is based on icons taken from the <a class="reference external" href="https://invent.kde.org/frameworks/breeze-icons">KDE/Breeze</a> project.</p></li>
+<li><p>Other icons found in this repository are taken from the <a class="reference external" href="https://invent.kde.org/frameworks/breeze-icons">KDE/Breeze</a> project
+(without modification).</p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Tag Editor</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#supported-formats">Supported formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-features">Additional features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backup-temporary-files">Backup/temporary files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-layout-options">File layout options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tag-position">Tag position</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#index-position">Index position</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#padding">Padding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#avoid-rewriting-files">Avoid rewriting files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#improve-performance">Improve performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#matroska-related-remarks">Matroska-related remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#download">Download</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#source">Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#packages-and-binaries">Packages and binaries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gui">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cli">CLI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#text-encoding-unicode-support">Text encoding / unicode support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-instructions">Build instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#building-with-qt-gui">Building with Qt GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-without-qt-gui">Building without Qt GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#json-export">JSON export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-this-straight">Building this straight</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Limitations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#known-problems-and-caveats">Known problems and caveats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#windows-specific-issues">Windows-specific issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#copyright-notice-and-license">Copyright notice and license</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#attribution-for-3rd-party-content">Attribution for 3rd party content</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
