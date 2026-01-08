@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using the Android app &#8212; Syncthing Tray 2025-12-02 documentation</title>
+    <title>Using the Android app &#8212; Syncthing Tray 2026-01-06 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
-    <script src="../_static/documentation_options.js?v=3f9a8ef1"></script>
+    <script src="../_static/documentation_options.js?v=391ea66c"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -38,8 +38,10 @@
 <p><strong>The Android app is still experimental.</strong> Use it with care and create backups of your
 configuration and data before trying it. Before filing any issues, be sure to read the section
 “<a class="reference internal" href="#caveats-on-android"><span class="xref myst">Caveats on Android</span></a>”. For screenshots, check out the section
-“<a class="reference internal" href="screenshots.html#mobile-ui-on-android"><span class="std std-ref">Screenshots of the mobile UI</span></a>”. When building from
-sources, check out the
+“<a class="reference internal" href="screenshots.html#mobile-ui-on-android"><span class="std std-ref">Screenshots of the mobile UI</span></a>”.</p>
+<p>The app can be installed and updated manually or via <a class="reference external" href="https://obtainium.imranr.dev/">Obtainium</a>.
+Check out <a class="reference external" href="https://martchus.github.io/syncthingtray/#downloads-section">the website</a>
+for download links. When building from sources, check out the
 <a class="reference external" href="https://github.com/Martchus/cpp-utilities/blob/master/README.md#remarks-about-building-for-android">Android-specific remarks</a>
 of the <code class="docutils literal notranslate"><span class="pre">c++utilities</span></code> README.</p>
 <section id="compatibility">
@@ -240,14 +242,29 @@ Check out the section
 when adding a new folder or device. This can also happen when opening the Syncthing documentation
 from within the app. So if you are on a device with low memory (which makes this more likely to
 happen), you should avoid switching to another app or opening the Syncthing documentation.</p></li>
-<li><p>Some Qt bugs mentioned under “<a class="reference internal" href="known_bugs_and_workarounds.html#list-of-bugs"><span class="std std-ref">List of bugs</span></a>” affect
-the Android app.</p></li>
+<li><p>The app is not always able to suppress connection errors when the Syncthing backend is restarted.</p></li>
+<li><p>The app can display an Android notification when the service process encounters an error while
+communicating with the Syncthing backend. These error notifications do not necessarily correspond to
+the errors shown in the app UI, as those originate from the UI process.</p></li>
 <li><p>The connection to Syncthing can sometimes not be restored after restarting Syncthing (e.g. to make
 an export/backup). This happens particularly often when using a UNIX domain socket. One can restart
 the app to work around it.</p></li>
+<li><p>Battery-life can be a problem. If you are affected I recommend disabling local discovery. Note that
+this is a problem of Syncthing itself and there is already
+<a class="reference external" href="https://forum.syncthing.net/t/syncthing-fork-v2-uses-far-too-much-battery-over-v1">a discussion in the forums</a>
+and <a class="reference external" href="https://github.com/syncthing/syncthing/pull/10494">a potential workaround</a>.</p></li>
+<li><p>It is possible to pause Syncthing if the network connection is metered. There are two options for
+this. The option in the launcher settings completely stops/starts Syncthing depending on the network
+connection. With
+<a class="reference external" href="https://github.com/syncthing/syncthing/issues/5353">rescans on startup not being optional</a> this will
+drain the battery if you have big folders. The option in the connection settings will keep Syncthing
+running but pause devices, discovery and relaying. This will hopefully not drain the battery as much
+but it can lead to inconsistencies, e.g. if you add a new device while the connection is metered.</p></li>
 <li><p>Some of the problems/solutions found on the
 <a class="reference external" href="https://github.com/Catfriend1/syncthing-android/wiki">Wiki pages of Syncthing-Fork</a> might help with
 Syncthing Tray on Android as well.</p></li>
+<li><p>Some Qt bugs mentioned under “<a class="reference internal" href="known_bugs_and_workarounds.html#list-of-bugs"><span class="std std-ref">List of bugs</span></a>” affect
+the Android app.</p></li>
 </ul>
 </section>
 <section id="using-the-document-provider-on-android">
