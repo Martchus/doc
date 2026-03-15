@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Syncthing Tray &#8212; Syncthing Tray 2026-02-03 documentation</title>
+    <title>Syncthing Tray &#8212; Syncthing Tray 2026-03-07 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=565d7cfc"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=b8ea5a41"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Screenshots" href="docs/screenshots.html" />
@@ -59,8 +59,9 @@ this document only covers Syncthing Tray.</p>
 and announcements of new features.</p>
 <p>Issues can be created on GitHub but please check the
 <a class="reference internal" href="docs/known_bugs_and_workarounds.html"><span class="std std-doc">documentation on known bugs and workarounds</span></a> before.</p>
-<p>Syncthing Tray works with Syncthing v1 and v2 (and probably v0). Syncthing Tray is maintained, and updates will
-be made to support future Syncthing versions as needed.</p>
+<p>Syncthing Tray works with Syncthing v2. It also very likely still works with Syncthing v1 (and even v0) but this
+is not regularly tested anymore. Syncthing Tray is maintained, and updates will be made to support future Syncthing
+versions as needed.</p>
 <section id="supported-platforms">
 <h2>Supported platforms<a class="headerlink" href="#supported-platforms" title="Link to this heading">¶</a></h2>
 <p>Official binaries are provided for Windows (for i686, x86_64 and aarch64), GNU/Linux (for x86_64) and Android
@@ -489,10 +490,19 @@ manually, e.g. <code class="docutils literal notranslate"><span class="pre">zypp
 </li>
 </ul>
 </li>
-<li><p>Debian ≥12 “bookworm” and its derivatives (Ubuntu, Pop!_OS, etc, but not Neon)</p>
+<li><p>Debian and its derivatives like Ubuntu</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">syncthingtray-kde-plasma</span></code> if using KDE Plasma; otherwise, <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">syncthingtray</span></code>.</p></li>
-<li><p>Installation from a Software Centre such as <a class="reference external" href="https://apps.gnome.org/en-GB/app/org.gnome.Software">GNOME Software</a> or
+<li><p><em>Some</em> versions of Debian provide packages for Syncthing Tray. Those packages <em>may</em> be available on <em>some</em> versions
+of <em>some</em> Debian derivats as well (e.g. Ubuntu, Pop!_OS, …). KDE neon is known to <strong>not</strong> support the packages. If
+your concrete distribution/version does not provide packages you will have to look into other options.</p></li>
+<li><p>Install packages via:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">syncthingtray</span></code> for the generic tray application</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">syncthingtray-kde-plasma</span></code> for the Plasmoid and other KDE integrations which is recommended if
+using KDE Plasma</p></li>
+</ul>
+</li>
+<li><p>Installation from a software center such as <a class="reference external" href="https://apps.gnome.org/en-GB/app/org.gnome.Software">GNOME Software</a> or
 <a class="reference external" href="https://apps.kde.org/en-gb/discover/">Discover</a> should be possible as well.</p></li>
 </ul>
 </li>
@@ -592,6 +602,16 @@ is possible with <code class="docutils literal notranslate"><span class="pre">st
 <li><p>for mingw-w64 PKGBUILDs check out <a class="reference external" href="https://github.com/Martchus/PKGBUILDs">my GitHub repository</a></p></li>
 </ul>
 </li>
+<li><p>Android</p>
+<ul>
+<li><p>for APKs check out the <a class="reference external" href="https://github.com/Martchus/syncthingtray/releases">release section on GitHub</a></p>
+<ul>
+<li><p>These APKs can be easily installed and updated via <a class="reference external" href="https://obtainium.imranr.dev/">Obtanium</a> following <a class="reference external" href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://app/%7B%22id%22%3A%20%22io.github.martchus.syncthingtray%22%2C%20%22url%22%3A%20%22https%3A%2F%2Fgithub.com%2FMartchus%2Fsyncthingtray%22%2C%20%22author%22%3A%20%22Martchus%22%2C%20%22name%22%3A%20%22Syncthing%20App%22%2C%20%22preferredApkIndex%22%3A%200%2C%20%22additionalSettings%22%3A%20%22%7B%5C%22includePrereleases%5C%22%3Afalse%2C%5C%22fallbackToOlderReleases%5C%22%3Atrue%2C%5C%22filterReleaseTitlesByRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22filterReleaseNotesByRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22verifyLatestTag%5C%22%3Afalse%2C%5C%22sortMethodChoice%5C%22%3A%5C%22date%5C%22%2C%5C%22useLatestAssetDateAsReleaseDate%5C%22%3Afalse%2C%5C%22releaseTitleAsVersion%5C%22%3Afalse%2C%5C%22trackOnly%5C%22%3Afalse%2C%5C%22versionExtractionRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22matchGroupToUse%5C%22%3A%5C%22%5C%22%2C%5C%22versionDetection%5C%22%3Atrue%2C%5C%22releaseDateAsVersion%5C%22%3Afalse%2C%5C%22useVersionCodeAsOSVersion%5C%22%3Afalse%2C%5C%22apkFilterRegEx%5C%22%3A%5C%22aarch64-linux-android%5C%22%2C%5C%22invertAPKFilter%5C%22%3Afalse%2C%5C%22autoApkFilterByArch%5C%22%3Atrue%2C%5C%22appName%5C%22%3A%5C%22Syncthing%20App%5C%22%2C%5C%22appAuthor%5C%22%3A%5C%22Martchus%5C%22%2C%5C%22shizukuPretendToBeGooglePlay%5C%22%3Afalse%2C%5C%22allowInsecure%5C%22%3Afalse%2C%5C%22exemptFromBackgroundUpdates%5C%22%3Afalse%2C%5C%22skipUpdateNotifications%5C%22%3Afalse%2C%5C%22about%5C%22%3A%5C%22%5C%22%2C%5C%22refreshBeforeDownload%5C%22%3Afalse%2C%5C%22includeZips%5C%22%3Atrue%2C%5C%22zippedApkFilterRegEx%5C%22%3A%5C%22%5C%22%7D%22%7D">this link</a>.</p></li>
+<li><p>The Android app requires Android 9 or later and a device with aarch64 or x86-64 CPU. Be sure to pick the correct download for your device (most likely 64-bit ARM).</p></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><p>FreeBSD</p>
 <ul>
 <li><p>the package syncthingtray is available from <a class="reference external" href="https://www.freshports.org/deskutils/syncthingtray">FreeBSD Ports</a></p></li>
@@ -613,7 +633,7 @@ is possible with <code class="docutils literal notranslate"><span class="pre">st
 <h2>Legal information<a class="headerlink" href="#legal-information" title="Link to this heading">¶</a></h2>
 <section id="copyright-notice-and-license">
 <h3>Copyright notice and license<a class="headerlink" href="#copyright-notice-and-license" title="Link to this heading">¶</a></h3>
-<p>Copyright © 2016-2025 Marius Kittler</p>
+<p>Copyright © 2016-2026 Marius Kittler</p>
 <p>All code - unless stated otherwise in a comment on top of the file - is licensed under <a class="reference download internal" download="" href="_downloads/9879d6db96fd29134fc802214163b95a/LICENSE"><span class="xref download myst">GPL-2-or-later</span></a>. This does <em>not</em> apply
 to code contained in Git repositories included as Git submodule (which contain their own README and licensing information).</p>
 </section>
@@ -725,7 +745,7 @@ and <a class="reference external" href="https://github.com/syncthing/docs">its d
       &#169;Martchus.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

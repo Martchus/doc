@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Known bugs and workarounds &#8212; Syncthing Tray 2026-02-03 documentation</title>
+    <title>Known bugs and workarounds &#8212; Syncthing Tray 2026-03-07 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
-    <script src="../_static/documentation_options.js?v=565d7cfc"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=b8ea5a41"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Contributing, building, developing, debugging" href="devel.html" />
@@ -37,22 +37,38 @@
 <h1>Known bugs and workarounds<a class="headerlink" href="#known-bugs-and-workarounds" title="Link to this heading">¶</a></h1>
 <p>The following bugs are caused by dependencies or limitations of certain
 platforms. For bugs of Syncthing Tray itself, check out the issues on GitHub.</p>
-<section id="workaround-positioning-issues-under-wayland">
-<h2>Workaround positioning issues under Wayland<a class="headerlink" href="#workaround-positioning-issues-under-wayland" title="Link to this heading">¶</a></h2>
-<p>The Qt Widgets based version basically works under Wayland but there are
+<section id="workaround-issues-under-wayland">
+<h2>Workaround issues under Wayland<a class="headerlink" href="#workaround-issues-under-wayland" title="Link to this heading">¶</a></h2>
+<p>The stand-alone tray application basically works under Wayland but there are
 positioning issues and the settings regarding positioning have no effect (see
-“<a class="reference internal" href="#list-of-bugs"><span class="xref myst">List of bugs</span></a>” section below). One can workaround this limitation by telling the
-window manager how to place the window, e.g. under Sway one could add a
-configuration like this:</p>
+“<a class="reference internal" href="#list-of-bugs"><span class="xref myst">List of bugs</span></a>” section below). <strong>Under KDE/Wayland one should
+simply use the Plasmoid instead of the stand-alone version.</strong></p>
+<p>Otherwise, one can workaround this limitation by telling the window manager how
+to place the window, e.g.:</p>
+<ul>
+<li><p>Under Sway one can add a configuration like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">for_window</span> <span class="p">[</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;^Syncthing Tray( \(.*\))?$&quot;</span><span class="p">]</span> <span class="n">floating</span> <span class="n">enable</span><span class="p">,</span> <span class="n">border</span> <span class="n">none</span><span class="p">,</span> <span class="n">resize</span> <span class="nb">set</span> <span class="mi">450</span> <span class="mi">400</span><span class="p">,</span> <span class="n">move</span> <span class="n">position</span> <span class="mi">916</span> <span class="mi">0</span>
 </pre></div>
 </div>
+</li>
+<li><p>Under KWin one can add a
+<a class="reference external" href="https://raw.githubusercontent.com/Martchus/syncthingtray/refs/heads/master/tray/resources/wayland-positioning-workaround.kwinrule">KWin rule</a>.</p></li>
+</ul>
+<p>It is also not possible to use a popup window under Wayland. Therefore a normal
+window without title bar is used. It will be closed manually when no windows are
+active anymore to emulate the auto-closing behavior of a popup window.</p>
 <p>Alternatively, one can also configure Syncthing Tray to use a normal window in
 the appearance settings. That doesn’t fix the positioning issue but then it
-looks just like a normal application so not being positioned in the tray area is
-less problematic.</p>
-<p>You can also select the window type “None”. This disables Syncthing Tray’s own UI
-completely and instead opens Syncthing directly when the tray icon is clicked.</p>
+becomes less problematic as Syncthing Tray will look and behave just like a
+normal application.</p>
+<p>You can also select the window type “None” in the appearance settings. This
+disables Syncthing Tray’s own UI completely and instead opens Syncthing directly
+when the tray icon is clicked.</p>
+<p>Note that use of Layer Shell, which could potentially help, has not been
+implemented yet. Using Layer Shell would be quite some effort. One had to add
+settings in Syncthing Tray to decide where/how to display the popup as this
+could still not be automatically determined. One also had to add support in Qt
+for using different Wayland shells in one application.</p>
 </section>
 <section id="tweak-gui-settings-for-dark-mode-under-windows">
 <h2>Tweak GUI settings for dark mode under Windows<a class="headerlink" href="#tweak-gui-settings-for-dark-mode-under-windows" title="Link to this heading">¶</a></h2>
@@ -247,7 +263,7 @@ https://codereview.qt-project.org/#/c/187069/. However, the fix is only availabl
 <li class="toctree-l1"><a class="reference internal" href="android.html">Using the Android app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Known bugs and workarounds</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#workaround-positioning-issues-under-wayland">Workaround positioning issues under Wayland</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workaround-issues-under-wayland">Workaround issues under Wayland</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tweak-gui-settings-for-dark-mode-under-windows">Tweak GUI settings for dark mode under Windows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dpi-awareness-under-windows">DPI awareness under Windows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#workaround-broken-high-dpi-scaling-of-plasmoid-under-x11">Workaround broken High-DPI scaling of Plasmoid under X11</a></li>
@@ -285,7 +301,7 @@ https://codereview.qt-project.org/#/c/187069/. However, the fix is only availabl
       &#169;Martchus.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

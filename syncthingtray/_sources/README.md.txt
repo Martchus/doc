@@ -28,8 +28,9 @@ and announcements of new features.
 Issues can be created on GitHub but please check the
 [documentation on known bugs and workarounds](docs/known_bugs_and_workarounds.md) before.
 
-Syncthing Tray works with Syncthing v1 and v2 (and probably v0). Syncthing Tray is maintained, and updates will
-be made to support future Syncthing versions as needed.
+Syncthing Tray works with Syncthing v2. It also very likely still works with Syncthing v1 (and even v0) but this
+is not regularly tested anymore. Syncthing Tray is maintained, and updates will be made to support future Syncthing
+versions as needed.
 
 ## Supported platforms
 Official binaries are provided for Windows (for i686, x86_64 and aarch64), GNU/Linux (for x86_64) and Android
@@ -417,9 +418,15 @@ See the [release section on GitHub](https://github.com/Martchus/syncthingtray/re
         * `syncthingplasmoid`/`syncthingplasmoid-qt6`: applet/plasmoid for Plasma desktop
         * `syncthingfileitemaction`/`syncthingfileitemaction-qt6`: Dolphin/KIO integration
         * `syncthingctl`/`syncthingctl-qt6`: command-line interface
-* Debian ≥12 "bookworm" and its derivatives (Ubuntu, Pop!_OS, etc, but not Neon)
-    * `sudo apt install syncthingtray-kde-plasma` if using KDE Plasma; otherwise, `sudo apt install syncthingtray`.
-    * Installation from a Software Centre such as [GNOME Software](https://apps.gnome.org/en-GB/app/org.gnome.Software) or
+* Debian and its derivatives like Ubuntu
+    * *Some* versions of Debian provide packages for Syncthing Tray. Those packages *may* be available on *some* versions
+      of *some* Debian derivats as well (e.g. Ubuntu, Pop!_OS, …). KDE neon is known to **not** support the packages. If
+      your concrete distribution/version does not provide packages you will have to look into other options.
+    * Install packages via:
+        * `sudo apt install syncthingtray` for the generic tray application
+        * `sudo apt install syncthingtray-kde-plasma` for the Plasmoid and other KDE integrations which is recommended if
+          using KDE Plasma
+    * Installation from a software center such as [GNOME Software](https://apps.gnome.org/en-GB/app/org.gnome.Software) or
       [Discover](https://apps.kde.org/en-gb/discover/) should be possible as well.
 * Exherbo
     * packages for my other project "Tag Editor" and dependencies could serve as a base and are provided
@@ -481,6 +488,10 @@ See the [release section on GitHub](https://github.com/Martchus/syncthingtray/re
     * or, using [Scoop](https://scoop.sh), type `scoop bucket add extras & scoop install extras/syncthingtray`.
     * or, via this [Chocolatey package](https://community.chocolatey.org/packages/syncthingtray), type `choco install syncthingtray`.
     * for mingw-w64 PKGBUILDs check out [my GitHub repository](https://github.com/Martchus/PKGBUILDs)
+* Android
+    * for APKs check out the [release section on GitHub](https://github.com/Martchus/syncthingtray/releases)
+        * These APKs can be easily installed and updated via [Obtanium](https://obtainium.imranr.dev/) following [this link](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://app/%7B%22id%22%3A%20%22io.github.martchus.syncthingtray%22%2C%20%22url%22%3A%20%22https%3A%2F%2Fgithub.com%2FMartchus%2Fsyncthingtray%22%2C%20%22author%22%3A%20%22Martchus%22%2C%20%22name%22%3A%20%22Syncthing%20App%22%2C%20%22preferredApkIndex%22%3A%200%2C%20%22additionalSettings%22%3A%20%22%7B%5C%22includePrereleases%5C%22%3Afalse%2C%5C%22fallbackToOlderReleases%5C%22%3Atrue%2C%5C%22filterReleaseTitlesByRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22filterReleaseNotesByRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22verifyLatestTag%5C%22%3Afalse%2C%5C%22sortMethodChoice%5C%22%3A%5C%22date%5C%22%2C%5C%22useLatestAssetDateAsReleaseDate%5C%22%3Afalse%2C%5C%22releaseTitleAsVersion%5C%22%3Afalse%2C%5C%22trackOnly%5C%22%3Afalse%2C%5C%22versionExtractionRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22matchGroupToUse%5C%22%3A%5C%22%5C%22%2C%5C%22versionDetection%5C%22%3Atrue%2C%5C%22releaseDateAsVersion%5C%22%3Afalse%2C%5C%22useVersionCodeAsOSVersion%5C%22%3Afalse%2C%5C%22apkFilterRegEx%5C%22%3A%5C%22aarch64-linux-android%5C%22%2C%5C%22invertAPKFilter%5C%22%3Afalse%2C%5C%22autoApkFilterByArch%5C%22%3Atrue%2C%5C%22appName%5C%22%3A%5C%22Syncthing%20App%5C%22%2C%5C%22appAuthor%5C%22%3A%5C%22Martchus%5C%22%2C%5C%22shizukuPretendToBeGooglePlay%5C%22%3Afalse%2C%5C%22allowInsecure%5C%22%3Afalse%2C%5C%22exemptFromBackgroundUpdates%5C%22%3Afalse%2C%5C%22skipUpdateNotifications%5C%22%3Afalse%2C%5C%22about%5C%22%3A%5C%22%5C%22%2C%5C%22refreshBeforeDownload%5C%22%3Afalse%2C%5C%22includeZips%5C%22%3Atrue%2C%5C%22zippedApkFilterRegEx%5C%22%3A%5C%22%5C%22%7D%22%7D).
+        * The Android app requires Android 9 or later and a device with aarch64 or x86-64 CPU. Be sure to pick the correct download for your device (most likely 64-bit ARM). 
 * FreeBSD
     * the package syncthingtray is available from [FreeBSD Ports](https://www.freshports.org/deskutils/syncthingtray)
 * Mac OS X/macOS
@@ -491,7 +502,7 @@ There is separate [documentation on these topics](docs/devel.md).
 
 ## Legal information
 ### Copyright notice and license
-Copyright © 2016-2025 Marius Kittler
+Copyright © 2016-2026 Marius Kittler
 
 All code - unless stated otherwise in a comment on top of the file - is licensed under [GPL-2-or-later](LICENSE). This does *not* apply
 to code contained in Git repositories included as Git submodule (which contain their own README and licensing information).
