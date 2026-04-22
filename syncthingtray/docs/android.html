@@ -52,14 +52,20 @@ errors and <a class="reference external" href="https://dontkillmyapp.com">the ap
 <p>For me, it works well enough on a three-year-old average Samsung device. I also successfully
 tested it on an older Nokia device with Android 10. So, it probably works on most phones that
 came out around 2018 or more recently. I haven’t tested the app on very low-end devices yet.</p>
-<p>The installation might not be possible on your device
-<a class="reference external" href="https://developer.android.com/developer-verification">due to restrictions</a>. Check out the
-explanation on <a class="reference external" href="https://keepandroidopen.org">Keep Android Open</a> for details. It is most likely
-still possible to install the app via <code class="docutils literal notranslate"><span class="pre">adb</span> <span class="pre">install</span> <span class="pre">…</span></code>. This tool is available in the
+<p>The installation might be prevented by default on your device
+<a class="reference external" href="https://developer.android.com/developer-verification">due to restrictions</a>. Installation is
+most likely still possible by following one of these approaches:</p>
+<ul class="simple">
+<li><p>Follow the “advanced workflow” described in a
+<a class="reference external" href="https://android-developers.googleblog.com/2026/03/android-developer-verification.html">Google blog post</a>.</p></li>
+<li><p>Install the app via <code class="docutils literal notranslate"><span class="pre">adb</span> <span class="pre">install</span> <span class="pre">…</span></code>. This tool is available in the
 <a class="reference external" href="https://developer.android.com/tools/releases/platform-tools">Android SDK Platform Tools</a>.
 One might try <a class="reference external" href="https://github.com/sam1am/anyapk">anyapk</a> to make this easier. I haven’t tested
-anyapk myself yet, though. Their README also contains instructions for installation via
-<code class="docutils literal notranslate"><span class="pre">adb</span> <span class="pre">install</span> <span class="pre">…</span></code>.</p>
+anyapk myself yet, though. Their README also contains generally useful instructions for
+installation via <code class="docutils literal notranslate"><span class="pre">adb</span> <span class="pre">install</span> <span class="pre">…</span></code>.</p></li>
+</ul>
+<p>Check out <a class="reference external" href="https://keepandroidopen.org">Keep Android Open</a> for a critical view on these
+restrictions and further explanations.</p>
 </section>
 <section id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
