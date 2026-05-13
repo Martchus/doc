@@ -108,8 +108,11 @@ Wayland.</p>
 </section>
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
+<p>This section lists the most important features. Most features are optional and configurable. Some features are
+platform-dependent.</p>
 <ul class="simple">
-<li><p>Provides quick access to the most used features but does not intend to replace the official web-based UI</p>
+<li><p>Tray icon displaying the overall status of Syncthing</p></li>
+<li><p>Quick access to the most used features but no full replacement of the official web-based UI</p>
 <ul>
 <li><p>Check state of folders and devices</p></li>
 <li><p>Check current traffic statistics</p></li>
@@ -124,19 +127,14 @@ scan, items out of sync, etc.</p></li>
 <li><p>View recent history of changes (done locally and remotely)</p></li>
 </ul>
 </li>
-<li><p>Shows “desktop” notifications</p>
-<ul>
-<li><p>The events for which to show notifications can be configured</p></li>
-<li><p>Uses Qt’s notification support or a D-Bus notification daemon directly</p></li>
-</ul>
-</li>
-<li><p>Provides a wizard for a quick setup</p></li>
-<li><p>Allows monitoring the status of the Syncthing systemd unit and starting and stopping it (see section
-“<a class="reference internal" href="#configuring-systemd-integration"><span class="xref myst">Configuring systemd integration</span></a>”)</p></li>
-<li><p>Provides an option to add the tray to the applications launched when the desktop environment starts</p></li>
-<li><p>Can launch Syncthing automatically on startup and display stdout/stderr (useful under Windows)</p></li>
-<li><p>Browsing the global file tree and selecting items to add to ignore patterns.</p></li>
-<li><p>Provides quick access to the official web-based UI</p>
+<li><p>Notifications for various events</p></li>
+<li><p>Wizard for a quick setup</p></li>
+<li><p>Autostart configuration</p></li>
+<li><p><a class="reference internal" href="#does-this-launch-or-bundle-syncthing-itself-what-about-my-existing-syncthing-installation"><span class="xref myst">Launcher</span></a> for Syncthing</p></li>
+<li><p><a class="reference internal" href="#configuring-systemd-integration"><span class="xref myst">Systemd integration</span></a></p></li>
+<li><p>Suspending synchronization while the network connection is metered</p></li>
+<li><p>Browser for the global file tree and selecting items to add to ignore patterns</p></li>
+<li><p>Quick access to the official web-based UI</p>
 <ul>
 <li><p>Can be opened as regular browser tab</p></li>
 <li><p>Can be opened in a dedicated window using either</p>
@@ -147,18 +145,18 @@ scan, items out of sync, etc.</p></li>
 </li>
 </ul>
 </li>
-<li><p>Allows switching quickly between multiple Syncthing instances</p></li>
-<li><p>Also features a simple command line utility <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code></p>
+<li><p>Switching quickly between multiple Syncthing instances; monitoring multiple Syncthing instances</p></li>
+<li><p>App for running Syncthing under Android</p></li>
+<li><p>Simple command line utility <code class="docutils literal notranslate"><span class="pre">syncthingctl</span></code> complementing the official CLI of Syncthing</p>
 <ul>
 <li><p>Check status</p></li>
 <li><p>Trigger rescan/pause/resume/restart</p></li>
 <li><p>Wait for idle</p></li>
 <li><p>View and modify raw configuration</p></li>
-<li><p>Supports Bash completion, even for folder and device names</p></li>
+<li><p>Bash completion with support for folder and device names</p></li>
 </ul>
 </li>
-<li><p>Also bundles a KIO plugin which shows the status of a Syncthing folder and allows to trigger Syncthing actions
-in the Dolphin file manager</p>
+<li><p>KIO plugin for the Dolphin file manager</p>
 <ul>
 <li><p>Rescan selected items</p></li>
 <li><p>Rescan entire Syncthing folder</p></li>
@@ -166,8 +164,7 @@ in the Dolphin file manager</p>
 <li><p>See also the <a class="reference internal" href="docs/screenshots.html#syncthing-actions-for-dolphin"><span class="std std-ref">screenshots</span></a></p></li>
 </ul>
 </li>
-<li><p>Allows building Syncthing as a library to run it in the same process as the tray/GUI</p></li>
-<li><p>English and German localization</p></li>
+<li><p>Building Syncthing as a library to run it in the same process as the tray/GUI</p></li>
 </ul>
 </section>
 <section id="does-this-launch-or-bundle-syncthing-itself-what-about-my-existing-syncthing-installation">

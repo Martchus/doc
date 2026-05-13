@@ -237,12 +237,24 @@ framework is used under the hood.</p>
 <section id="add-a-new-locale">
 <h3>Add a new locale<a class="headerlink" href="#add-a-new-locale" title="Link to this heading">¶</a></h3>
 <p>Translations for further locales can be added quite easily:</p>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p>Append a new translation file for the desired locale to the <code class="docutils literal notranslate"><span class="pre">TS_FILES</span></code> list
 in <code class="docutils literal notranslate"><span class="pre">connector/CMakeLists.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">model/CMakeLists.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">widgets/CMakeLists.txt</span></code>,
 <code class="docutils literal notranslate"><span class="pre">fileitemactionplugin/CMakeLists.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">plasmoid/CMakeLists.txt</span></code> and
 <code class="docutils literal notranslate"><span class="pre">tray/CMakeLists.txt</span></code>.</p></li>
-<li><p>Configure a new build, e.g. follow steps under <em><a class="reference internal" href="#building-this-straight"><span class="xref myst">Building this straight</span></a></em>.</p></li>
+<li><p>Configure a new build, e.g. follow steps under <em><a class="reference internal" href="#building-this-straight"><span class="xref myst">Building this straight</span></a></em>.</p>
+<ul>
+<li><p>To cut corners, one can also skip step 2, 3 and 4 by using all the English translation files
+(all the <code class="docutils literal notranslate"><span class="pre">*_en_US.ts</span></code> files) as base. Take care to update the <code class="docutils literal notranslate"><span class="pre">language</span></code> attribute in the <code class="docutils literal notranslate"><span class="pre">TS</span></code>
+element after copying those files.</p></li>
+<li><p>If you configure a build, be sure to create a fully-featured build. Otherwise not all text is
+considered. For a fully-featured build, the following CMake options need to be passed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DNO_FILE_ITEM_ACTION_PLUGIN</span><span class="o">=</span><span class="n">OFF</span> <span class="o">-</span><span class="n">DNO_PLASMOID</span><span class="o">=</span><span class="n">OFF</span> <span class="o">-</span><span class="n">DNO_LIBSYNCTHING</span><span class="o">=</span><span class="n">OFF</span> <span class="o">-</span><span class="n">DUSE_LIBSYNCTHING</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DQUICK_GUI</span><span class="o">=</span><span class="n">ON</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
 <li><p>Conduct a full build or generate only translation files via the <code class="docutils literal notranslate"><span class="pre">translations</span></code> target.</p></li>
 <li><p>New translation files should have been created by the build system under
 <code class="docutils literal notranslate"><span class="pre">connector/translations</span></code>, <code class="docutils literal notranslate"><span class="pre">model/translations</span></code>, <code class="docutils literal notranslate"><span class="pre">widgets/translations</span></code>,
@@ -255,6 +267,8 @@ is <a class="reference external" href="http://doc.qt.io/qt-5/linguist-translator
 <li><p>If you have added translations for the mobile UI as well, it makes sense to add an entry
 for the new locale also in <code class="docutils literal notranslate"><span class="pre">tray/android/res/xml/locale_config.xml</span></code>. This is required
 for the locale to be selectable in app-specific language settings on Android.</p></li>
+<li><p>If you want to add translations for Android-specific text, check out files under
+<code class="docutils literal notranslate"><span class="pre">tray/android/res/values*/*.xml</span></code> and create similar files for the new locale.</p></li>
 </ol>
 </section>
 <section id="extend-update-existing-translations">
@@ -266,6 +280,7 @@ for the locale to be selectable in app-specific language settings on Android.</p
 which are no longer required of course).</p></li>
 <li><p>Change the strings within the translation files found within the <code class="docutils literal notranslate"><span class="pre">translations</span></code>
 directories like in step <code class="docutils literal notranslate"><span class="pre">4.</span></code>/<code class="docutils literal notranslate"><span class="pre">5.</span></code> of “<a class="reference internal" href="#add-a-new-locale"><span class="xref myst">Add a new locale</span></a>”.</p></li>
+<li><p>Change the strings within the string resource files under <code class="docutils literal notranslate"><span class="pre">tray/android/res/values*/*.xml</span></code>.</p></li>
 </ul>
 </section>
 <section id="remarks">
