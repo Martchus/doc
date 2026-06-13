@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Testing and debugging Plasmoid for Plasma with Qt Creator &#8212; Syncthing Tray 2026-04-07 documentation</title>
+    <title>Testing and debugging Plasmoid for Plasma with Qt Creator &#8212; Syncthing Tray 2026-06-05 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
-    <script src="../_static/documentation_options.js?v=c4b8ee07"></script>
+    <script src="../_static/documentation_options.js?v=72b49840"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -44,9 +44,10 @@ will install the Plasmoid in a test directory which is <code class="docutils lit
 by default (configurable via cache variable <code class="docutils literal notranslate"><span class="pre">PLASMOID_TESTDIR</span></code>, the sub directory
 <code class="docutils literal notranslate"><span class="pre">plasmoid-testing</span></code> is not part of the variable).</p></li>
 <li><p>Add new config for “run” in Qt Creator and set <code class="docutils literal notranslate"><span class="pre">bash</span></code> as executable.</p></li>
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">%{sourceDir}/../../syncthingtray/plasmoid/scripts/starttesting.sh</span> <span class="pre">plasmoidviewer</span> <span class="pre">--applet</span> <span class="pre">martchus.syncthingplasmoid</span></code>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">%{sourceDir}/../../syncthingtray/plasmoid/scripts/starttesting.sh</span> <span class="pre">plasmoidviewer</span> <span class="pre">--applet</span> <span class="pre">martchus.syncthingplasmoid-devel</span></code>
 as CLI argument.</p>
 <ul class="simple">
+<li><p>Remove the <code class="docutils literal notranslate"><span class="pre">-devel</span></code> suffix if not building with a CMake development preset.</p></li>
 <li><p>It is also possible to use <code class="docutils literal notranslate"><span class="pre">plasmawindowed</span></code> or <code class="docutils literal notranslate"><span class="pre">plasmashell</span></code>, see sections below.</p></li>
 <li><p>It is also possible to specify <code class="docutils literal notranslate"><span class="pre">org.kde.plasma.systemtray</span></code> as applet to test how the Plasmoid
 looks like within the system tray plasmoid.</p></li>

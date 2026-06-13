@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Contributing, building, developing, debugging &#8212; Syncthing Tray 2026-04-07 documentation</title>
+    <title>Contributing, building, developing, debugging &#8212; Syncthing Tray 2026-06-05 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
-    <script src="../_static/documentation_options.js?v=c4b8ee07"></script>
+    <script src="../_static/documentation_options.js?v=72b49840"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -48,18 +48,39 @@ For basic instructions and platform-specific details check out the README file o
 “<a class="reference internal" href="#building-this-straight"><span class="xref myst">Building this straight</span></a>”. There’s also documentation about
 <a class="reference external" href="https://github.com/Martchus/cpp-utilities/blob/master/doc/buildvariables.md">various build variables</a> which
 can be passed to CMake to influence the build.</p>
+<section id="configuration-of-ui-types">
+<h3>Configuration of UI types<a class="headerlink" href="#configuration-of-ui-types" title="Link to this heading">¶</a></h3>
+<p>Syncthing Tray supports a Qt Widgets based UI (enabled via the CMake argument <code class="docutils literal notranslate"><span class="pre">-DWIDGETS_GUI=ON</span></code>) and a
+Qt Quick based UI (enabled via the CMake argument <code class="docutils literal notranslate"><span class="pre">-DQUICK_GUI=ON</span></code>):</p>
+<ul class="simple">
+<li><p>The former is intended for desktop platforms and the latter is intended for mobile platforms.</p></li>
+<li><p>Both UI types can in theory be used under all platforms, though.</p></li>
+<li><p>Both UI types can be enabled at the same time.</p></li>
+<li><p>When building <code class="docutils literal notranslate"><span class="pre">qtutilities</span></code> separately, be sure to enable support for the UI types in consistency with
+the build of Syncthing Tray.</p></li>
+<li><p>To modernize and extend the UI for desktop-based platforms, parts of the Qt Widgets based UI are
+integrated into the Qt Quick based UI. This integration is still work-in-progress and can be enabled by
+building Syncthing Tray with both UI types and used by starting <code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code> with the environment
+variable <code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_USE_QT_QUICK=1</span></code> set.</p></li>
+<li><p>The Plasmoid is always using its distinct Qt Quick UI and parts of the Qt Widgets UI.</p></li>
+</ul>
+</section>
 <section id="further-dependencies">
 <h3>Further dependencies<a class="headerlink" href="#further-dependencies" title="Link to this heading">¶</a></h3>
 <p>The following Qt modules are required (only the latest Qt 5 and Qt 6 version tested): Qt Core, Qt Concurrent,
-Qt Network, Qt D-Bus, Qt Gui, Qt Widgets, Qt Svg, Qt WebEngineWidgets/WebKitWidgets</p>
-<p>It is recommended to use at least Qt 6.7 to avoid limitations in previous versions (see
-<a class="reference internal" href="known_bugs_and_workarounds.html"><span class="std std-doc">the documentation on known bugs</span></a> for details).</p>
+Qt Network, Qt D-Bus, Qt Gui, Qt Svg</p>
+<p>When building the Qt Widgets UI, the modules Qt Widgets and Qt WebEngineWidgets/WebKitWidgets are required as
+well.</p>
 <p>The built-in web view and therefore the modules WebEngineWidgets/WebKitWidgets are optional (see
 section “<a class="reference internal" href="#select-qt-module-for-web-view-and-javascript"><span class="xref myst">Select Qt module for web view and JavaScript</span></a>”).</p>
 <p>The Qt Quick UI needs at least Qt 6.9 and also additional Qt modules found in the Qt Declarative repository.
 It also contains experimental code for a built-in web view which uses the Qt WebView module. This is optional
-and not used at this point.</p>
+and not used at this point. If only building the Qt Quick UI, Qt Widgets is not required.</p>
 <p>When building for Android at least Qt 6.9 is required.</p>
+<p>It is recommended to use at least Qt 6.7 to avoid limitations in previous versions (see
+<a class="reference internal" href="known_bugs_and_workarounds.html"><span class="std std-doc">the documentation on known bugs</span></a> for details). When building the Quick UI and
+when building for Android, it is recommended to use the latest version of Qt as no testing under older versions
+is done and bug fixes found in the latest version of Qt might needed.</p>
 <p>To build the plugin for Dolphin integration KIO is also required. To skip building the plugin,
 add <code class="docutils literal notranslate"><span class="pre">-DNO_FILE_ITEM_ACTION_PLUGIN:BOOL=ON</span></code> to the CMake arguments.</p>
 <p>To build the Plasmoid for the Plasma desktop, the Qt module QML and the KDE Frameworks module Plasma are
