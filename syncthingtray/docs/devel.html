@@ -58,10 +58,10 @@ Qt Quick based UI (enabled via the CMake argument <code class="docutils literal 
 <li><p>Both UI types can be enabled at the same time.</p></li>
 <li><p>When building <code class="docutils literal notranslate"><span class="pre">qtutilities</span></code> separately, be sure to enable support for the UI types in consistency with
 the build of Syncthing Tray.</p></li>
-<li><p>To modernize and extend the UI for desktop-based platforms, parts of the Qt Widgets based UI are
-integrated into the Qt Quick based UI. This integration is still work-in-progress and can be enabled by
-building Syncthing Tray with both UI types and used by starting <code class="docutils literal notranslate"><span class="pre">syncthingtray</span></code> with the environment
-variable <code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_USE_QT_QUICK=1</span></code> set.</p></li>
+<li><p>To modernize and extend the UI for desktop-based platforms, parts of the Qt Quick based UI are
+integrated into the Qt Widgets based UI. This integration is still work-in-progress and can be enabled by
+building Syncthing Tray with both UI types, setting the environment variable
+<code class="docutils literal notranslate"><span class="pre">SYNCTHINGTRAY_ENABLE_WIP_FEATURES=1</span></code>, and selecting “Modern” as style in the appearance settings.</p></li>
 <li><p>The Plasmoid is always using its distinct Qt Quick UI and parts of the Qt Widgets UI.</p></li>
 </ul>
 </section>
