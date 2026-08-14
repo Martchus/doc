@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Syncthing Tray &#8212; Syncthing Tray 2026-06-05 documentation</title>
+    <title>Syncthing Tray &#8212; Syncthing Tray 2026-08-10 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=72b49840"></script>
+    <script src="_static/documentation_options.js?v=b6d7be36"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -46,7 +46,7 @@ screenshots.</p>
 <a class="reference external" href="https://www.kde.org/applications/system/dolphin">Dolphin</a> file manager</p></li>
 <li><p><a class="reference internal" href="#configuring-plasmoid"><span class="xref myst">Plasmoid</span></a> for <a class="reference external" href="https://www.kde.org/plasma-desktop">KDE Plasma</a></p></li>
 <li><p><a class="reference internal" href="docs/cli.html"><span class="std std-doc">Command-line interface</span></a></p></li>
-<li><p><a class="reference internal" href="docs/android.html"><span class="std std-doc">Android app</span></a> (still experimental)</p></li>
+<li><p><a class="reference internal" href="docs/android.html"><span class="std std-doc">Android app</span></a></p></li>
 <li><p>Qt-ish C++ library</p></li>
 </ul>
 <hr class="docutils" />
@@ -73,16 +73,20 @@ section of this document.</p>
 <p>Syncthing Tray is known to work under:</p>
 <ul class="simple">
 <li><p>Windows 10 and 11</p></li>
+<li><p>Android (see <a class="reference internal" href="docs/android.html"><span class="std std-doc">Android-specific documentation</span></a>)</p></li>
+<li><p>GNU/Linux</p>
+<ul>
 <li><p>KDE Plasma</p></li>
 <li><p>Openbox using lxqt/LXDE or using Tint2</p></li>
 <li><p>GTK-centered desktops such as Cinnamon, GNOME and Xfce (with caveats, see remarks below)</p></li>
 <li><p>COSMIC (only simple tray menu works, see remarks below)</p></li>
 <li><p>Awesome</p></li>
 <li><p>i3</p></li>
-<li><p>macOS</p></li>
 <li><p>Deepin Desktop Environment</p></li>
 <li><p>Sway/Swaybar/Waybar (with caveats, see remarks below)</p></li>
-<li><p>Android (still experimental, see <a class="reference internal" href="docs/android.html"><span class="std std-doc">Android-specific documentation</span></a>)</p></li>
+</ul>
+</li>
+<li><p>macOS</p></li>
 </ul>
 <p>This does <em>not</em> mean Syncthing Tray is actively tested on all of these platforms or
 desktop environments.</p>
@@ -240,11 +244,33 @@ an empty file called <code class="docutils literal notranslate"><span class="pre
 <a class="reference external" href="https://docs.syncthing.net/users/config.html">its own documentation</a>.</p>
 <p>The Plasmoid uses the same configuration file but also uses Plasma’s configuration
 management for settings specific to a concrete instance of the Plasmoid.</p>
-<p>The experimental UI tailored for mobile devices uses a distinct configuration which is
-located under <code class="docutils literal notranslate"><span class="pre">~/.config/Martchus/Syncthing</span> <span class="pre">Tray</span></code> on GNU/Linux and
+<p>The UI tailored for mobile devices uses a distinct configuration which is located under
 <code class="docutils literal notranslate"><span class="pre">/storage/emulated/0/Android/data/io.github.martchus.syncthingtray</span></code> on Android and
-<code class="docutils literal notranslate"><span class="pre">%appdata%\Martchus\Syncthing</span> <span class="pre">Tray</span></code> on Windows. The configuration and database of Syncthing
-itself are also located within this directory when Syncthing is launched via the mobile UI.</p>
+<code class="docutils literal notranslate"><span class="pre">~/.config/Martchus/Syncthing</span> <span class="pre">Tray</span></code> on GNU/Linux and <code class="docutils literal notranslate"><span class="pre">%appdata%\Martchus\Syncthing</span> <span class="pre">Tray</span></code> on
+Windows. The configuration and database of Syncthing itself are also located within this
+directory when Syncthing is launched via the mobile UI.</p>
+</section>
+<section id="modern-ui">
+<h3>Modern UI<a class="headerlink" href="#modern-ui" title="Link to this heading">¶</a></h3>
+<p>It is possible to enable a more modern UI. This UI is a result of porting Syncthing Tray to
+Android and brings back the modern design and many features of the mobile UI to Syncthing Tray
+on the desktop. For instance, it allows editing folders and devices. It also comes with a
+dashboard that looks similar to the official web-based UI.</p>
+<p>The modern UI is new and there is still room for improvement. Hence it needs to be enabled
+manually. Additionally, Syncthing Tray needs to be built with <code class="docutils literal notranslate"><span class="pre">-DQUICK_GUI=ON</span></code> and Qt 6.10 or
+newer is required. This is the case for official Qt 6 based Syncthing Tray builds but might not
+be the case for downstream builds. The modern UIl also requires Vulkan under GNU/Linux.</p>
+<p>With these conditions met, you can enable the modern UI under the appearance settings. The
+change requires a restart of Syncthing Tray to take effect. In the settings for showing the
+web-based UI of Syncthing you can also select showing the UI provided by Syncthing Tray instead.</p>
+<p>Changing the <a class="reference external" href="https://doc.qt.io/qt-6/qtquickcontrols-styles.html">style</a> of the modern UI via
+the environment variable <code class="docutils literal notranslate"><span class="pre">QT_QUICK_CONTROLS_STYLE</span></code> or the CLI option <code class="docutils literal notranslate"><span class="pre">--qqc2-style</span></code> only works
+if Syncthing Tray was built with <code class="docutils literal notranslate"><span class="pre">-DQUICK_GUI_CONTROLS_STYLE=dynamic</span></code> as it is done by my
+GNU/Linux packaging. Other builds don’t support this to reduce the size of the executable.</p>
+<p>In case you prefer the classic UI you can continue using it. It will not be deleted anytime soon.
+However, new UI features will mainly focus on the new UI now.</p>
+<p>The Plasmoid still has its distinct UI. However, it also allows accessing the new features of
+the modern UI, such as the ability to edit folders and devices.</p>
 </section>
 <section id="connect-to-syncthing-via-unix-domain-socket">
 <h3>Connect to Syncthing via Unix domain socket<a class="headerlink" href="#connect-to-syncthing-via-unix-domain-socket" title="Link to this heading">¶</a></h3>
@@ -451,7 +477,7 @@ Keep reading here for a more detailed list.</p>
 <li><p>Arch Linux</p>
 <ul>
 <li><p>for PKGBUILDs check out <a class="reference external" href="https://github.com/Martchus/PKGBUILDs">my GitHub repository</a> or
-<a class="reference external" href="https://aur.archlinux.org/packages?SeB=m&amp;amp;K=Martchus">the AUR</a></p></li>
+<a class="reference external" href="https://aur.archlinux.org/packages?SeB=m&amp;K=Martchus">the AUR</a></p></li>
 <li><p>there is also a <a class="reference external" href="https://martchus.dyn.f3l.de/repo/arch/ownstuff">binary repository</a></p></li>
 </ul>
 </li>
@@ -469,10 +495,10 @@ list.</p></li>
 manually, e.g. <code class="docutils literal notranslate"><span class="pre">zypper</span> <span class="pre">rm</span> <span class="pre">libsyncthingconnector1_1_20</span> <span class="pre">libsyncthingmodel1_1_20</span> <span class="pre">libsyncthingwidgets1_1_20</span></code>.</p></li>
 </ul>
 </li>
-<li><p>latest releases: <a class="reference external" href="https://software.opensuse.org/download.html?project=home:mkittler&amp;amp;package=syncthingtray">download page</a>,
+<li><p>latest releases: <a class="reference external" href="https://software.opensuse.org/download.html?project=home:mkittler&amp;package=syncthingtray">download page</a>,
 <a class="reference external" href="https://download.opensuse.org/repositories/home:/mkittler">repositories URL</a>,
 <a class="reference external" href="https://build.opensuse.org/project/show/home:mkittler">project page</a></p></li>
-<li><p>Git master: <a class="reference external" href="https://software.opensuse.org/download.html?project=home:mkittler:vcs&amp;amp;package=syncthingtray">download page</a>,
+<li><p>Git master: <a class="reference external" href="https://software.opensuse.org/download.html?project=home:mkittler:vcs&amp;package=syncthingtray">download page</a>,
 <a class="reference external" href="https://download.opensuse.org/repositories/home:/mkittler:/vcs">repositories URL</a>,
 <a class="reference external" href="https://build.opensuse.org/project/show/home:mkittler:vcs">project page</a></p></li>
 </ul>
@@ -551,7 +577,7 @@ Syncthing Tray can still show the official web-based UI in a dedicated window vi
 already installed using its “app mode”. Alternatively, use the distribution-specific builds provided for Arch Linux,
 openSUSE and Fedora which come with the built-in web view enabled.</p></li>
 <li><p>The archive is signed with the GPG key
-<a class="reference external" href="https://keyserver.ubuntu.com/pks/lookup?search=B9E36A7275FC61B464B67907E06FE8F53CDC6A4C&amp;amp;fingerprint=on&amp;amp;op=index"><code class="docutils literal notranslate"><span class="pre">B9E36A7275FC61B464B67907E06FE8F53CDC6A4C</span></code></a> for manual verification.</p></li>
+<a class="reference external" href="https://keyserver.ubuntu.com/pks/lookup?search=B9E36A7275FC61B464B67907E06FE8F53CDC6A4C&amp;fingerprint=on&amp;op=index"><code class="docutils literal notranslate"><span class="pre">B9E36A7275FC61B464B67907E06FE8F53CDC6A4C</span></code></a> for manual verification.</p></li>
 <li><p>The executable is signed in addition using ECDSA for verification by the updater. The public key can be found
 <a class="reference external" href="https://github.com/Martchus/syncthingtray/blob/master/tray/application/main.cpp">in the source code</a> and verification
 is possible with <code class="docutils literal notranslate"><span class="pre">stsigtool</span></code> or OpenSSL.</p></li>
@@ -587,7 +613,7 @@ than 1.21/1.27.0 instead.</p></li>
 Syncthing Tray can still show the official web-based UI in a dedicated window via a Chromium-based browser you have
 already installed (e.g. Edge or Chrome) using its “app mode”.</p></li>
 <li><p>The archive is signed with the GPG key
-<a class="reference external" href="https://keyserver.ubuntu.com/pks/lookup?search=B9E36A7275FC61B464B67907E06FE8F53CDC6A4C&amp;amp;fingerprint=on&amp;amp;op=index"><code class="docutils literal notranslate"><span class="pre">B9E36A7275FC61B464B67907E06FE8F53CDC6A4C</span></code></a> for manual verification.</p></li>
+<a class="reference external" href="https://keyserver.ubuntu.com/pks/lookup?search=B9E36A7275FC61B464B67907E06FE8F53CDC6A4C&amp;fingerprint=on&amp;op=index"><code class="docutils literal notranslate"><span class="pre">B9E36A7275FC61B464B67907E06FE8F53CDC6A4C</span></code></a> for manual verification.</p></li>
 <li><p>The executable is signed in addition using ECDSA for verification by the updater. The public key can be found
 <a class="reference external" href="https://github.com/Martchus/syncthingtray/blob/master/tray/application/main.cpp">in the source code</a> and verification
 is possible with <code class="docutils literal notranslate"><span class="pre">stsigtool</span></code> or OpenSSL.</p></li>

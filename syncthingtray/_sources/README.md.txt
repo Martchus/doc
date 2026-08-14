@@ -11,7 +11,7 @@ The following integrations are provided:
   [Dolphin](https://www.kde.org/applications/system/dolphin) file manager
 * [Plasmoid](#configuring-plasmoid) for [KDE Plasma](https://www.kde.org/plasma-desktop)
 * [Command-line interface](docs/cli.md)
-* [Android app](docs/android.md) (still experimental)
+* [Android app](docs/android.md)
 * Qt-ish C++ library
 
 ---
@@ -43,16 +43,17 @@ section of this document.
 Syncthing Tray is known to work under:
 
 * Windows 10 and 11
-* KDE Plasma
-* Openbox using lxqt/LXDE or using Tint2
-* GTK-centered desktops such as Cinnamon, GNOME and Xfce (with caveats, see remarks below)
-* COSMIC (only simple tray menu works, see remarks below)
-* Awesome
-* i3
+* Android (see [Android-specific documentation](docs/android.md))
+* GNU/Linux
+    * KDE Plasma
+    * Openbox using lxqt/LXDE or using Tint2
+    * GTK-centered desktops such as Cinnamon, GNOME and Xfce (with caveats, see remarks below)
+    * COSMIC (only simple tray menu works, see remarks below)
+    * Awesome
+    * i3
+    * Deepin Desktop Environment
+    * Sway/Swaybar/Waybar (with caveats, see remarks below)
 * macOS
-* Deepin Desktop Environment
-* Sway/Swaybar/Waybar (with caveats, see remarks below)
-* Android (still experimental, see [Android-specific documentation](docs/android.md))
 
 This does *not* mean Syncthing Tray is actively tested on all of these platforms or
 desktop environments.
@@ -198,11 +199,37 @@ Note that this only applies to Syncthing Tray. For Syncthing itself, check out
 The Plasmoid uses the same configuration file but also uses Plasma's configuration
 management for settings specific to a concrete instance of the Plasmoid.
 
-The experimental UI tailored for mobile devices uses a distinct configuration which is
-located under `~/.config/Martchus/Syncthing Tray` on GNU/Linux and
+The UI tailored for mobile devices uses a distinct configuration which is located under
 `/storage/emulated/0/Android/data/io.github.martchus.syncthingtray` on Android and
-`%appdata%\Martchus\Syncthing Tray` on Windows. The configuration and database of Syncthing
-itself are also located within this directory when Syncthing is launched via the mobile UI.
+`~/.config/Martchus/Syncthing Tray` on GNU/Linux and `%appdata%\Martchus\Syncthing Tray` on
+Windows. The configuration and database of Syncthing itself are also located within this
+directory when Syncthing is launched via the mobile UI.
+
+### Modern UI
+It is possible to enable a more modern UI. This UI is a result of porting Syncthing Tray to
+Android and brings back the modern design and many features of the mobile UI to Syncthing Tray
+on the desktop. For instance, it allows editing folders and devices. It also comes with a
+dashboard that looks similar to the official web-based UI.
+
+The modern UI is new and there is still room for improvement. Hence it needs to be enabled
+manually. Additionally, Syncthing Tray needs to be built with `-DQUICK_GUI=ON` and Qt 6.10 or
+newer is required. This is the case for official Qt 6 based Syncthing Tray builds but might not
+be the case for downstream builds. The modern UIl also requires Vulkan under GNU/Linux.
+
+With these conditions met, you can enable the modern UI under the appearance settings. The
+change requires a restart of Syncthing Tray to take effect. In the settings for showing the
+web-based UI of Syncthing you can also select showing the UI provided by Syncthing Tray instead.
+
+Changing the [style](https://doc.qt.io/qt-6/qtquickcontrols-styles.html) of the modern UI via
+the environment variable `QT_QUICK_CONTROLS_STYLE` or the CLI option `--qqc2-style` only works
+if Syncthing Tray was built with `-DQUICK_GUI_CONTROLS_STYLE=dynamic` as it is done by my
+GNU/Linux packaging. Other builds don't support this to reduce the size of the executable.
+
+In case you prefer the classic UI you can continue using it. It will not be deleted anytime soon.
+However, new UI features will mainly focus on the new UI now.
+
+The Plasmoid still has its distinct UI. However, it also allows accessing the new features of
+the modern UI, such as the ability to edit folders and devices.
 
 ### Connect to Syncthing via Unix domain socket
 When using a Unix domain socket as the Syncthing GUI address (e.g., by starting Syncthing with
